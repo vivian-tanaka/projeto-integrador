@@ -2,7 +2,7 @@ package com.mercadolibre.dambetan01.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mercadolibre.dambetan01.dtos.response.AccountResponseDTO;
+import com.mercadolibre.dambetan01.dtos.response.EmployeeResponseDTO;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -26,5 +26,5 @@ public class CountryHouseDTO {
     private String country;
 
     @JsonIgnore
-    private List<AccountResponseDTO> accounts;
+    private List<EmployeeResponseDTO> accounts;
 }

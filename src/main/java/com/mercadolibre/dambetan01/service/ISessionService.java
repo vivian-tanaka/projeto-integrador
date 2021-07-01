@@ -1,7 +1,7 @@
 package com.mercadolibre.dambetan01.service;
 
 
-import com.mercadolibre.dambetan01.dtos.response.AccountResponseDTO;
+import com.mercadolibre.dambetan01.dtos.response.EmployeeResponseDTO;
 import javassist.NotFoundException;
 
 public interface ISessionService {
@@ -15,5 +15,5 @@ public interface ISessionService {
      * @return
      * @throws NotFoundException
      */
-    AccountResponseDTO login(String username, String password) throws NotFoundException;
+    EmployeeResponseDTO login(String username, String password) throws NotFoundException;
 }
