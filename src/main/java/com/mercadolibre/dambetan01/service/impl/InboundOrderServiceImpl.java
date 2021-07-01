@@ -1,0 +1,104 @@
+package com.mercadolibre.dambetan01.service.impl;
+
+import com.mercadolibre.dambetan01.dtos.BatchItemDTO;
+import com.mercadolibre.dambetan01.dtos.InboundOrderDTO;
+import com.mercadolibre.dambetan01.dtos.SectionDTO;
+import com.mercadolibre.dambetan01.dtos.response.InboundOrderResponseDTO;
+import com.mercadolibre.dambetan01.model.*;
+import com.mercadolibre.dambetan01.repository.*;
+import com.mercadolibre.dambetan01.service.InboundOrderService;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@Service
+public class InboundOrderServiceImpl implements InboundOrderService {
+
+    ModelMapper modelMapper = new ModelMapper();
+
+    final ProductRepository productRepository;
+
+    final InboundOrderRepository repository;
+
+    final SectionRepository sectionRepository;
+
+    final
+    SupervisorRepository supervisorRepository;
+
+    public InboundOrderServiceImpl(ProductRepository productRepository, InboundOrderRepository repository, SectionRepository sectionRepository, SupervisorRepository supervisorRepository) {
+        this.productRepository = productRepository;
+        this.repository = repository;
+        this.sectionRepository = sectionRepository;
+        this.supervisorRepository = supervisorRepository;
+    }
+
+    @Override
+    public InboundOrderResponseDTO createInboundOrder(InboundOrderDTO inboundOrderDTO, Long id) {
+        return createAndSaveOrder(inboundOrderDTO, id);
+    }
+
+    //TODO solve updateInboundOrder method
+    @Override
+    public InboundOrderResponseDTO updateInboundOrder(InboundOrderDTO inboundOrderDTO, Long id) {
+        return null;
+    }
+
+    private Supervisor getSupervisor(Long id) {
+        return supervisorRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    private Section getSection(SectionDTO sectionDTO) {
+        return sectionRepository.findSectionBySectionCode(sectionDTO.getSectionCode()).orElseThrow(NoSuchElementException::new);
+    }
+
+    private Product getProduct(BatchItemDTO item) {
+        return productRepository.findById(item.getProductId()).orElseThrow(NoSuchElementException::new);
+    }
+
+    private List<BatchItem> mapBatchItemsDTO(InboundOrderDTO inboundOrderDTO) {
+        List<BatchItemDTO> batchItemDTOS = inboundOrderDTO.getBatchStock();
+        List<BatchItem> batchItems = new ArrayList<>();
+
+        for (BatchItemDTO item: batchItemDTOS) {
+            Product product = getProduct(item);
+            BatchItem batchItem = BatchItem.builder()
+                    .product(product)
+                    .currentTemperature(item.getCurrentTemperature())
+                    .minTemperature(item.getMinTemperature())
+                    .maxTemperature(item.getMaxTemperature())
+                    .initialQuantity(item.getInitialQuantity())
+                    .currentQuantity(item.getCurrentQuantity())
+                    .manufacturingDate(item.getManufacturingDate())
+                    .manufacturingTime(item.getManufacturingTime())
+                    .dueDate(item.getDueDate())
+                    .build();
+
+            batchItems.add(batchItem);
+        }
+        return batchItems;
+    }
+
+    private InboundOrderResponseDTO createAndSaveOrder(InboundOrderDTO inboundOrderDTO, Long id) {
+        SectionDTO sectionDTO = inboundOrderDTO.getSection();
+        Supervisor supervisor = getSupervisor(id);
+        Section section = getSection(sectionDTO);
+
+        List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);
+
+        InboundOrder inboundOrder = InboundOrder.builder()
+                .supervisor(supervisor)
+                .orderDate(LocalDate.now())
+                .section(section)
+                .batchStock(batchItems)
+                .build();
+
+        repository.save(inboundOrder);
+
+        return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
+    }
+
+}
