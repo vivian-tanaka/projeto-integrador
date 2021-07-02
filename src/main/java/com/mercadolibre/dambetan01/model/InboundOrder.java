@@ -16,7 +16,6 @@ import java.util.List;
 public class InboundOrder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDate orderDate;
