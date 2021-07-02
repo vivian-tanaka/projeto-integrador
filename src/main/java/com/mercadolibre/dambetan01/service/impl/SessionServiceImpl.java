@@ -1,28 +1,26 @@
 package com.mercadolibre.dambetan01.service.impl;
 
-import com.mercadolibre.dambetan01.dtos.response.AccountResponseDTO;
+import com.mercadolibre.dambetan01.dtos.response.EmployeeResponseDTO;
 import com.mercadolibre.dambetan01.exceptions.ApiException;
-import com.mercadolibre.dambetan01.model.Account;
-import com.mercadolibre.dambetan01.repository.AccountRepository;
+import com.mercadolibre.dambetan01.model.Employee;
+import com.mercadolibre.dambetan01.repository.EmployeeRepository;
 import com.mercadolibre.dambetan01.service.ISessionService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import javassist.NotFoundException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class SessionServiceImpl implements ISessionService {
-    private final AccountRepository accountRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public SessionServiceImpl(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public SessionServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     /**
@@ -35,13 +33,13 @@ public class SessionServiceImpl implements ISessionService {
      * @throws NotFoundException
      */
     @Override
-    public AccountResponseDTO login(String username, String password) throws ApiException {
+    public EmployeeResponseDTO login(String username, String password) throws ApiException {
         //Voy a la base de datos y reviso que el usuario y contraseña existan.
-        Account account = accountRepository.findByUsernameAndPassword(username, password);
+        Employee employee = employeeRepository.findByUsernameAndPassword(username, password);
 
-        if (account != null) {
-            String token = getJWTToken(username);
-            AccountResponseDTO user = new AccountResponseDTO();
+        if (employee != null) {
+            String token = getJWTToken(employee);
+            EmployeeResponseDTO user = new EmployeeResponseDTO();
             user.setUsername(username);
             user.setToken(token);
             return user;
@@ -53,19 +51,18 @@ public class SessionServiceImpl implements ISessionService {
 
     /**
      * Genera un token para un usuario específico, válido por 10'
-     * @param username
+     * @param employee
      * @return
      */
-    private String getJWTToken(String username) {
+    private String getJWTToken(Employee employee) {
         String secretKey = "mySecretKey";
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                .commaSeparatedStringToAuthorityList("ROLE_USER");
+
         String token = Jwts
                 .builder()
                 .setId("softtekJWT")
-                .setSubject(username)
+                .setSubject(employee.getUsername())
                 .claim("authorities",
-                        grantedAuthorities.stream()
+                        employee.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))

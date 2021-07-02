@@ -8,3 +8,7 @@ INSERT INTO `accounts` (`id`, `password`, `rol`, `username`, `id_country_house_f
 INSERT INTO `accounts` (`id`, `password`, `rol`, `username`, `id_country_house_fk`) VALUES ('2', 'contra123', '1', 'user_two', '2');
 INSERT INTO `accounts` (`id`, `password`, `rol`, `username`, `id_country_house_fk`) VALUES ('3', 'contra123', '1', 'user_three', '3');
 INSERT INTO `accounts` (`id`, `password`, `rol`, `username`, `id_country_house_fk`) VALUES ('4', 'contra123', '1', 'user_four', '4');
+
+INSERT INTO `role` (`id`, `role_name`)
+SELECT * FROM (SELECT NULL, 'USER_EMPLOYEE') AS tmp
+WHERE NOT EXISTS (SELECT role_name FROM role WHERE role_name = 'USER_EMPLOYEE') LIMIT 1;

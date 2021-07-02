@@ -1,7 +1,7 @@
 package com.mercadolibre.dambetan01.unit.controller;
 
 import com.mercadolibre.dambetan01.controller.SessionController;
-import com.mercadolibre.dambetan01.dtos.response.AccountResponseDTO;
+import com.mercadolibre.dambetan01.dtos.response.EmployeeResponseDTO;
 import com.mercadolibre.dambetan01.exceptions.ApiException;
 import com.mercadolibre.dambetan01.service.ISessionService;
 import javassist.NotFoundException;
@@ -23,7 +23,7 @@ class SessionControllerTest {
         when(service.login("user_one", "contra12"))
                 .thenThrow(new ApiException("404", "Usuario y/o contraseña incorrecto", 404));
         when(service.login("user_one", "contra123"))
-                .thenReturn(new AccountResponseDTO("user_one", "contra123", "TOKEN"));
+                .thenReturn(new EmployeeResponseDTO("user_one", "contra123", "TOKEN"));
         controller = new SessionController(service);
     }
 
@@ -35,7 +35,7 @@ class SessionControllerTest {
 
     @Test
     void loginOk() throws Exception {
-        AccountResponseDTO accountDTO = controller.login("user_one","contra123");
+        EmployeeResponseDTO accountDTO = controller.login("user_one","contra123");
         assertEquals("user_one", accountDTO.getUsername());
         assertEquals("contra123", accountDTO.getPassword());
         assertEquals("TOKEN", accountDTO.getToken());
