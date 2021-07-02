@@ -1,6 +1,5 @@
 package com.mercadolibre.dambetan01.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.dambetan01.Application;
 import com.mercadolibre.dambetan01.controller.InboundOrderController;
@@ -8,7 +7,7 @@ import com.mercadolibre.dambetan01.dtos.BatchItemDTO;
 import com.mercadolibre.dambetan01.dtos.InboundOrderDTO;
 import com.mercadolibre.dambetan01.dtos.SectionDTO;
 import com.mercadolibre.dambetan01.dtos.response.InboundOrderResponseDTO;
-import com.mercadolibre.dambetan01.model.InboundOrder;
+import com.mercadolibre.dambetan01.service.InboundOrderService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 
@@ -53,7 +51,7 @@ public class InboundOrderControllerTest {
     void createNewInboundOrderTest() throws Exception {
         InboundOrderDTO inboundOrderDTO = InboundOrderDTO.builder()
                 .orderDate("01-01-2021")
-                .orderNumber(1)
+                .orderNumber(1l)
                 .batchStock(new ArrayList<BatchItemDTO>())
                 .section(new SectionDTO())
                 .build();
