@@ -19,7 +19,7 @@ public class BatchItemDTO {
     private double maxTemperature;
     private int initialQuantity;
     private int currentQuantity;
-    private String manufacturingDate;
-    private String manufacturingTime;
-    private String dueDate;
+    private LocalDate manufacturingDate;
+    private LocalDateTime manufacturingTime;
+    private LocalDate dueDate;
 }
