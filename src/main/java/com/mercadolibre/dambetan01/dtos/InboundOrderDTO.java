@@ -18,7 +18,7 @@ import java.util.List;
 public class InboundOrderDTO {
 
     @NotNull(message = "OrderNumber is required")
-    private Integer orderNumber;
+    private Long orderNumber;
 
     @NotBlank(message = "OrderDate is required")
     private String orderDate;
