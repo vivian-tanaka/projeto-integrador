@@ -18,5 +18,5 @@ public class SectionDTO {
     private String sectionCode;
 
     @NotNull(message = "warehouseCode is required")
-    private Integer warehouseCode;
+    private Long warehouseCode;
 }

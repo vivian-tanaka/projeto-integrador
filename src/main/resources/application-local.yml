@@ -6,7 +6,7 @@ spring:
   datasource:
     host: proxysql.master.meliseginf.com:6612
     db: g3projdb
-    username: 
+    username:
     password:
     initialization-mode: always
 

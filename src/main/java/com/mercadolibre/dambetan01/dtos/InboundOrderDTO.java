@@ -1,6 +1,10 @@
 package com.mercadolibre.dambetan01.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,8 +26,9 @@ public class InboundOrderDTO {
     @NotNull(message = "OrderNumber is required")
     private Long orderNumber;
 
-    @NotBlank(message = "OrderDate is required")
-    @JsonFormat(pattern="dd-MM-yyyy")
+    @NotNull(message = "OrderDate is required")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate orderDate;
 
     @Valid

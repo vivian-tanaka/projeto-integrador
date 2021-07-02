@@ -8,6 +8,7 @@ import com.mercadolibre.dambetan01.model.*;
 import com.mercadolibre.dambetan01.repository.*;
 import com.mercadolibre.dambetan01.service.InboundOrderService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,24 +21,28 @@ public class InboundOrderServiceImpl implements InboundOrderService {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    final InboundOrderRepository repository;
+    private final InboundOrderRepository repository;
 
-    final SectionRepository sectionRepository;
+    private final SectionRepository sectionRepository;
 
-    final
+    private final
     SupervisorRepository supervisorRepository;
 
-    final
+    private final
     BatchItemRepository batchItemRepository;
 
-    public InboundOrderServiceImpl(ProductRepository productRepository, InboundOrderRepository repository, SectionRepository sectionRepository, SupervisorRepository supervisorRepository, BatchItemRepository batchItemRepository) {
+    private final
+    EmployeeRepository employeeRepository;
+
+    public InboundOrderServiceImpl(ProductRepository productRepository, InboundOrderRepository repository, SectionRepository sectionRepository, SupervisorRepository supervisorRepository, BatchItemRepository batchItemRepository, EmployeeRepository employeeRepository) {
         this.productRepository = productRepository;
         this.repository = repository;
         this.sectionRepository = sectionRepository;
         this.supervisorRepository = supervisorRepository;
         this.batchItemRepository = batchItemRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -45,7 +50,6 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         return createAndSaveOrder(inboundOrderDTO, username);
     }
 
-    //TODO solve updateInboundOrder method
     @Override
     public InboundOrderResponseDTO updateInboundOrder(InboundOrderDTO inboundOrderDTO, String username) {
         if(!repository.existsById(inboundOrderDTO.getOrderNumber())){
@@ -61,12 +65,20 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
     }
 
+    private Employee getEmployee(String username){
+        return employeeRepository.findByUsername(username);
+    }
+
     private Supervisor getSupervisor(String username) {
         return supervisorRepository.findSupervisorByUsername(username).orElseThrow(NoSuchElementException::new);
     }
 
+    private Supervisor getSupervisor(Long id) {
+        return supervisorRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
     private Section getSection(SectionDTO sectionDTO) {
-        return sectionRepository.findSectionBySectionCode(sectionDTO.getSectionCode()).orElseThrow(NoSuchElementException::new);
+        return sectionRepository.findSectionBySectionCodeAndWarehouse_Id(sectionDTO.getSectionCode(), sectionDTO.getWarehouseCode()).orElseThrow(NoSuchElementException::new);
     }
 
     private Product getProduct(BatchItemDTO item) {
@@ -98,7 +110,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
 
     private InboundOrderResponseDTO createAndSaveOrder(InboundOrderDTO inboundOrderDTO, String username) {
         SectionDTO sectionDTO = inboundOrderDTO.getSection();
-        Supervisor supervisor = getSupervisor(username);
+        Supervisor supervisor = getSupervisor(getEmployee(username).getId());
         Section section = getSection(sectionDTO);
 
         List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);

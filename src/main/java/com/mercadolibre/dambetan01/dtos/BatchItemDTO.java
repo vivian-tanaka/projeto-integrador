@@ -1,6 +1,12 @@
 package com.mercadolibre.dambetan01.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,15 +47,18 @@ public class BatchItemDTO {
     @NotNull(message = "currentQuantity is required")
     private int currentQuantity;
 
-    @NotBlank(message = "manufacturingDate is required")
-    @JsonFormat(pattern="dd-MM-yyyy")
+    @NotNull(message = "manufacturingDate is required")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate manufacturingDate;
 
-    @NotBlank(message = "manufacturingTime is required")
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+    @NotNull(message = "manufacturingTime is required")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime manufacturingTime;
 
-    @NotBlank(message = "dueDate is required")
-    @JsonFormat(pattern="dd-MM-yyyy")
+    @NotNull(message = "dueDate is required")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dueDate;
 }
