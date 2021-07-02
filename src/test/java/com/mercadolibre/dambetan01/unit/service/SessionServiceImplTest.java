@@ -33,7 +33,7 @@ class SessionServiceImplTest {
 
     @Test
     void loginOk(){
-        Employee employee = new Employee(1L, "User", "Pass", null, null, null);
+        Employee employee = new Employee(1L, "User", "Pass", null, null, null, null);
         when(repository.findByUsernameAndPassword("User", "Pass")).thenReturn(employee);
         EmployeeResponseDTO accountDTO = service.login("User","Pass");
         assertEquals("User", accountDTO.getUsername());

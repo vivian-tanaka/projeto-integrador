@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/fresh-products/inboundorder")
@@ -20,7 +21,7 @@ public class InboundOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<InboundOrderResponseDTO> create(@RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
+    public ResponseEntity<InboundOrderResponseDTO> create(@Valid @RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
         String jwtToken = getToken(request);
         InboundOrderResponseDTO response = inboundOrderService
                 .createInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
@@ -39,7 +40,7 @@ public class InboundOrderController {
         String authorizationHeader = request.getHeader("Authorization");
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return request.getHeader(authorizationHeader).replace("Bearer ", "");
+            return authorizationHeader.replace("Bearer ", "");
         }
         return null;
     }

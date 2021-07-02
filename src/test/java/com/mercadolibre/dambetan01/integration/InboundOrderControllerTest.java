@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,7 +51,7 @@ public class InboundOrderControllerTest {
     @DisplayName("Should create new Inbound Order")
     void createNewInboundOrderTest() throws Exception {
         InboundOrderDTO inboundOrderDTO = InboundOrderDTO.builder()
-                .orderDate("01-01-2021")
+                .orderDate(LocalDate.now())
                 .orderNumber(1l)
                 .batchStock(new ArrayList<BatchItemDTO>())
                 .section(new SectionDTO())
