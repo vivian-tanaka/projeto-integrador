@@ -1,5 +1,6 @@
 package com.mercadolibre.dambetan01.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,11 +42,14 @@ public class BatchItemDTO {
     private int currentQuantity;
 
     @NotBlank(message = "manufacturingDate is required")
+    @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate manufacturingDate;
 
     @NotBlank(message = "manufacturingTime is required")
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime manufacturingTime;
 
     @NotBlank(message = "dueDate is required")
+    @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate dueDate;
 }

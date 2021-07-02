@@ -1,5 +1,6 @@
 package com.mercadolibre.dambetan01.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,8 @@ public class InboundOrderDTO {
     private Long orderNumber;
 
     @NotBlank(message = "OrderDate is required")
-    private String orderDate;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    private LocalDate orderDate;
 
     @Valid
     private SectionDTO section;
