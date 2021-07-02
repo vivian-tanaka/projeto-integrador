@@ -8,6 +8,7 @@ import com.mercadolibre.dambetan01.model.*;
 import com.mercadolibre.dambetan01.repository.*;
 import com.mercadolibre.dambetan01.service.InboundOrderService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,11 +30,15 @@ public class InboundOrderServiceImpl implements InboundOrderService {
     final
     SupervisorRepository supervisorRepository;
 
-    public InboundOrderServiceImpl(ProductRepository productRepository, InboundOrderRepository repository, SectionRepository sectionRepository, SupervisorRepository supervisorRepository) {
+    final
+    BatchItemRepository batchItemRepository;
+
+    public InboundOrderServiceImpl(ProductRepository productRepository, InboundOrderRepository repository, SectionRepository sectionRepository, SupervisorRepository supervisorRepository, BatchItemRepository batchItemRepository) {
         this.productRepository = productRepository;
         this.repository = repository;
         this.sectionRepository = sectionRepository;
         this.supervisorRepository = supervisorRepository;
+        this.batchItemRepository = batchItemRepository;
     }
 
     @Override
@@ -96,6 +101,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                 .batchStock(batchItems)
                 .build();
 
+        batchItemRepository.saveAll(batchItems);
         repository.save(inboundOrder);
 
         return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
