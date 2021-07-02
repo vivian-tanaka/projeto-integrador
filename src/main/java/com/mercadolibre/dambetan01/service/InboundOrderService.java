@@ -5,7 +5,7 @@ import com.mercadolibre.dambetan01.dtos.response.InboundOrderResponseDTO;
 
 public interface InboundOrderService {
 
-    InboundOrderResponseDTO createInboundOrder(InboundOrderDTO inboundOrderDTO, Long id);
+    InboundOrderResponseDTO createInboundOrder(InboundOrderDTO inboundOrderDTO, String username);
 
-    InboundOrderResponseDTO updateInboundOrder(InboundOrderDTO inboundOrderDTO, Long id);
+    InboundOrderResponseDTO updateInboundOrder(InboundOrderDTO inboundOrderDTO, String username);
 }

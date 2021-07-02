@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class InboundOrderDTO {
 
-    private Integer orderNumber;
+    private Long orderNumber;
     private String orderDate;
     private SectionDTO section;
     private List<BatchItemDTO> batchStock = new ArrayList<>();

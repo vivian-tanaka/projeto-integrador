@@ -8,7 +8,6 @@ import com.mercadolibre.dambetan01.model.*;
 import com.mercadolibre.dambetan01.repository.*;
 import com.mercadolibre.dambetan01.service.InboundOrderService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -42,18 +41,28 @@ public class InboundOrderServiceImpl implements InboundOrderService {
     }
 
     @Override
-    public InboundOrderResponseDTO createInboundOrder(InboundOrderDTO inboundOrderDTO, Long id) {
-        return createAndSaveOrder(inboundOrderDTO, id);
+    public InboundOrderResponseDTO createInboundOrder(InboundOrderDTO inboundOrderDTO, String username) {
+        return createAndSaveOrder(inboundOrderDTO, username);
     }
 
     //TODO solve updateInboundOrder method
     @Override
-    public InboundOrderResponseDTO updateInboundOrder(InboundOrderDTO inboundOrderDTO, Long id) {
-        return null;
+    public InboundOrderResponseDTO updateInboundOrder(InboundOrderDTO inboundOrderDTO, String username) {
+        if(!repository.existsById(inboundOrderDTO.getOrderNumber())){
+            return createAndSaveOrder(inboundOrderDTO, username);
+        }
+        InboundOrder inboundOrder = repository.findById(inboundOrderDTO.getOrderNumber()).orElseThrow(NoSuchElementException::new);
+        List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);
+        inboundOrder.setBatchStock(batchItems);
+
+        batchItemRepository.saveAll(batchItems);
+        repository.save(inboundOrder);
+
+        return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
     }
 
-    private Supervisor getSupervisor(Long id) {
-        return supervisorRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    private Supervisor getSupervisor(String username) {
+        return supervisorRepository.findSupervisorByUsername(username).orElseThrow(NoSuchElementException::new);
     }
 
     private Section getSection(SectionDTO sectionDTO) {
@@ -87,15 +96,16 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         return batchItems;
     }
 
-    private InboundOrderResponseDTO createAndSaveOrder(InboundOrderDTO inboundOrderDTO, Long id) {
+    private InboundOrderResponseDTO createAndSaveOrder(InboundOrderDTO inboundOrderDTO, String username) {
         SectionDTO sectionDTO = inboundOrderDTO.getSection();
-        Supervisor supervisor = getSupervisor(id);
+        Supervisor supervisor = getSupervisor(username);
         Section section = getSection(sectionDTO);
 
         List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);
 
         InboundOrder inboundOrder = InboundOrder.builder()
                 .supervisor(supervisor)
+                .id(inboundOrderDTO.getOrderNumber())
                 .orderDate(LocalDate.now())
                 .section(section)
                 .batchStock(batchItems)
