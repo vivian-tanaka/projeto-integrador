@@ -1,6 +1,7 @@
 package com.mercadolibre.dambetan01.model;
 
 import lombok.*;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +18,12 @@ public class User implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
+//    @Column(unique = true)
     private String username;
     private String password;
+
+//    @Column(unique = true)
     private String email;
 }

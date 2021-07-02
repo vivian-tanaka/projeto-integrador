@@ -27,8 +27,13 @@ public class Employee implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
+//    @Column(unique = true)
     private String username;
     private String password;
+
+//    @Column(unique = true)
     private String email;
 
     @ManyToOne

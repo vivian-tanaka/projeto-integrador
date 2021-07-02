@@ -19,9 +19,6 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name="id")
 public class Supervisor extends Employee{
 
-
-    private String name;
-
     @OneToMany(mappedBy = "supervisor")
     private List<InboundOrder> inboundOrders = new ArrayList<>();
 }

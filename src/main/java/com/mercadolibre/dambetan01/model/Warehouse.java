@@ -18,6 +18,8 @@ public class Warehouse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @OneToMany(mappedBy = "warehouse")
     List<Section> sections = new ArrayList<>();
 
