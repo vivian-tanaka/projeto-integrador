@@ -2,6 +2,8 @@ package com.mercadolibre.dambetan01.controller;
 
 import com.mercadolibre.dambetan01.dtos.InboundOrderDTO;
 import com.mercadolibre.dambetan01.dtos.response.InboundOrderResponseDTO;
+import com.mercadolibre.dambetan01.service.ISessionService;
+import com.mercadolibre.dambetan01.service.impl.SessionServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.http.ResponseEntity;
@@ -21,46 +23,27 @@ public class InboundOrderController {
 
     @PostMapping
     public ResponseEntity<InboundOrderResponseDTO> create(@RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
-        InboundOrderResponseDTO response = inboundOrderService.createInboundOrder(inboundOrderDTO,getUsernameFromToken(request));
+        String jwtToken = getToken(request);
+        InboundOrderResponseDTO response = inboundOrderService
+                .createInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping
     public ResponseEntity<InboundOrderResponseDTO> update(@RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
-        InboundOrderResponseDTO response = inboundOrderService.updateInboundOrder(inboundOrderDTO, request);
+        String jwtToken = getToken(request);
+        InboundOrderResponseDTO response = inboundOrderService
+                .updateInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
         return ResponseEntity.ok().body(response);
     }
 
-    private String getUsernameFromToken(HttpServletRequest request){
+    private String getToken(HttpServletRequest request){
         String authorizationHeader = request.getHeader("Authorization");
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return getUsername(authorizationHeader);
+            return request.getHeader(authorizationHeader).replace("Bearer ", "");
         }
-
         return null;
-    }
-
-    private String getUsername(String token) {
-        Claims claims = getClaims(token);
-
-        if(claims != null) {
-            String username = claims.getSubject();
-            return username;
-        }
-
-        return null;
-    }
-
-    private Claims getClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey("asdasdsadasd".getBytes())
-                    .parseClaimsJws(token)
-                    .getBody();
-        }catch (Exception e) {
-            return null;
-        }
     }
 
 }
