@@ -4,6 +4,7 @@ import com.mercadolibre.dambetan01.dtos.InboundOrderDTO;
 import com.mercadolibre.dambetan01.dtos.response.InboundOrderResponseDTO;
 import com.mercadolibre.dambetan01.service.InboundOrderService;
 import com.mercadolibre.dambetan01.service.impl.SessionServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +20,23 @@ public class InboundOrderController {
     public InboundOrderController(InboundOrderService inboundOrderService){
         this.inboundOrderService = inboundOrderService;
     }
-    //TODO must return 201 created
+
     @PostMapping
-    public ResponseEntity<InboundOrderResponseDTO> create(@Valid @RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
+    @ResponseStatus(HttpStatus.CREATED)
+    public InboundOrderResponseDTO create(@Valid @RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
         String jwtToken = getToken(request);
         InboundOrderResponseDTO response = inboundOrderService
                 .createInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
-        return ResponseEntity.ok().body(response);
+        return response;
     }
 
     @PutMapping
-    public ResponseEntity<InboundOrderResponseDTO> update(@RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
+    @ResponseStatus(HttpStatus.CREATED)
+    public InboundOrderResponseDTO update(@RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
         String jwtToken = getToken(request);
         InboundOrderResponseDTO response = inboundOrderService
                 .updateInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
-        return ResponseEntity.ok().body(response);
+        return response;
     }
 
     private String getToken(HttpServletRequest request){

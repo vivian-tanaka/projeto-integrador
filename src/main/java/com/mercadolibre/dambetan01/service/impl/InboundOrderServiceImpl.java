@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class InboundOrderServiceImpl implements InboundOrderService {
@@ -55,11 +56,20 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         if(!repository.existsById(inboundOrderDTO.getOrderNumber())){
             return createAndSaveOrder(inboundOrderDTO, username);
         }
-        InboundOrder inboundOrder = repository.findById(inboundOrderDTO.getOrderNumber()).orElseThrow(NoSuchElementException::new);
-        List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);
-        inboundOrder.setBatchStock(batchItems);
 
-        batchItemRepository.saveAll(batchItems);
+        SectionDTO sectionDTO = inboundOrderDTO.getSection();
+        Supervisor supervisor = getSupervisor(getEmployee(username).getId());
+        Section section = getSection(sectionDTO);
+
+        List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);
+        InboundOrder inboundOrder = InboundOrder.builder()
+                .supervisor(supervisor)
+                .id(inboundOrderDTO.getOrderNumber())
+                .orderDate(LocalDate.now())
+                .section(section)
+                .batchStock(batchItems)
+                .build();
+
         repository.save(inboundOrder);
 
         return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
@@ -93,6 +103,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
             Product product = getProduct(item);
             BatchItem batchItem = BatchItem.builder()
                     .product(product)
+                    .id(item.getBatchNumber())
                     .currentTemperature(item.getCurrentTemperature())
                     .minTemperature(item.getMinTemperature())
                     .maxTemperature(item.getMaxTemperature())
@@ -114,7 +125,6 @@ public class InboundOrderServiceImpl implements InboundOrderService {
         Section section = getSection(sectionDTO);
 
         List<BatchItem> batchItems = mapBatchItemsDTO(inboundOrderDTO);
-
         InboundOrder inboundOrder = InboundOrder.builder()
                 .supervisor(supervisor)
                 .id(inboundOrderDTO.getOrderNumber())
@@ -123,10 +133,10 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                 .batchStock(batchItems)
                 .build();
 
-        batchItemRepository.saveAll(batchItems);
         repository.save(inboundOrder);
 
-        return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
-    }
+        InboundOrder savedInboundOrder = repository.findById(inboundOrderDTO.getOrderNumber()).get();
 
+        return modelMapper.map(savedInboundOrder, InboundOrderResponseDTO.class);
+    }
 }

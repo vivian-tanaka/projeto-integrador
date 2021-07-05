@@ -1,6 +1,7 @@
 package com.mercadolibre.dambetan01.model;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -24,7 +25,11 @@ public class InboundOrder {
     @JoinColumn(name = "section_id")
     private Section section;
 
-    @OneToMany(mappedBy = "inboundOrder")
+//    @OneToMany(mappedBy = "inboundOrder", fetch = FetchType.EAGER)
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<BatchItem> batchStock = new ArrayList<>();
 
     @ManyToOne
