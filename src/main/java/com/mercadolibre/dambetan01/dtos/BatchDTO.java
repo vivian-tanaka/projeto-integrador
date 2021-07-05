@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BatchItemDTO {
+public class BatchDTO {
 
     @NotNull(message = "batchNumber is required")
     @Positive

@@ -1,7 +1,6 @@
 package com.mercadolibre.dambetan01.model;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -30,7 +29,7 @@ public class InboundOrder {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<BatchItem> batchStock = new ArrayList<>();
+    private List<Batch> batchStock = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "supervisor_id")

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BatchItem {
+public class Batch {
 
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,7 +3,7 @@ package com.mercadolibre.dambetan01.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.dambetan01.Application;
 import com.mercadolibre.dambetan01.controller.InboundOrderController;
-import com.mercadolibre.dambetan01.dtos.BatchItemDTO;
+import com.mercadolibre.dambetan01.dtos.BatchDTO;
 import com.mercadolibre.dambetan01.dtos.InboundOrderDTO;
 import com.mercadolibre.dambetan01.dtos.SectionDTO;
 import com.mercadolibre.dambetan01.dtos.response.InboundOrderResponseDTO;
@@ -53,7 +53,7 @@ public class InboundOrderControllerTest {
         InboundOrderDTO inboundOrderDTO = InboundOrderDTO.builder()
                 .orderDate(LocalDate.now())
                 .orderNumber(1l)
-                .batchStock(new ArrayList<BatchItemDTO>())
+                .batchStock(new ArrayList<BatchDTO>())
                 .section(new SectionDTO())
                 .build();
         String json = new ObjectMapper().writeValueAsString(inboundOrderDTO);

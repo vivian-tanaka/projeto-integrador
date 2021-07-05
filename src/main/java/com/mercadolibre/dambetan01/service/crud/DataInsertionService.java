@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataInsertionService {
 
-    final BatchItemRepository batchItemRepository;
+    final BatchRepository batchRepository;
     final EmployeeRepository employeeRepository;
     final InboundOrderRepository inboundOrderRepository;
     final ProductRepository productRepository;
@@ -18,7 +18,7 @@ public class DataInsertionService {
     final WarehouseRepository warehouseRepository;
 
 
-    public DataInsertionService(BatchItemRepository batchItemRepository,
+    public DataInsertionService(BatchRepository batchRepository,
                                 EmployeeRepository employeeRepository,
                                 InboundOrderRepository inboundOrderRepository,
                                 ProductRepository productRepository,
@@ -27,7 +27,7 @@ public class DataInsertionService {
                                 SupervisorRepository supervisorRepository,
                                 UserRepository userRepository,
                                 WarehouseRepository warehouseRepository) {
-        this.batchItemRepository = batchItemRepository;
+        this.batchRepository = batchRepository;
         this.employeeRepository = employeeRepository;
         this.inboundOrderRepository = inboundOrderRepository;
         this.productRepository = productRepository;
@@ -66,8 +66,8 @@ public class DataInsertionService {
         employeeRepository.save(employee);
     }
 
-    public void createBatchItem(BatchItem batchItem){
-        batchItemRepository.save(batchItem);
+    public void createBatchItem(Batch batch){
+        batchRepository.save(batch);
     }
 
 }

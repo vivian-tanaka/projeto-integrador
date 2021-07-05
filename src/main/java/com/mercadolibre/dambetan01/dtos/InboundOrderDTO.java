@@ -1,6 +1,5 @@
 package com.mercadolibre.dambetan01.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -11,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,6 +33,6 @@ public class InboundOrderDTO {
     private SectionDTO section;
 
     @Valid
-    private List<BatchItemDTO> batchStock = new ArrayList<>();
+    private List<BatchDTO> batchStock = new ArrayList<>();
 
 }
