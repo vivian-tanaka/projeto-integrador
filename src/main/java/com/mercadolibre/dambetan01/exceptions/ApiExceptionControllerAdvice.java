@@ -3,6 +3,7 @@ package com.mercadolibre.dambetan01.exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,9 +53,7 @@ public class ApiExceptionControllerAdvice {
         );
     }
 
-
-
-    @ExceptionHandler
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<ValidationError> handleException(MethodArgumentNotValidException ex) {
@@ -73,18 +72,19 @@ public class ApiExceptionControllerAdvice {
         return new ValidationError(objectError.getObjectName(), objectError.getDefaultMessage());
     }
 
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({
             NotFoundException.class
     })
     @ResponseBody
-    public ApiError notFoundRequest(Exception ex) {
-        return new ApiError(
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError notFoundRequest(NotFoundException ex) {
+        ApiError error = new ApiError(
                 ex.getClass().getName(),
                 ex.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value()
+                HttpStatus.NOT_FOUND.value()
         );
+        return error;
 
     }
+
 }

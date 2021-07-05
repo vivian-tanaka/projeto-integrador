@@ -1,5 +1,6 @@
 package com.mercadolibre.dambetan01.service.impl;
 
+import com.mercadolibre.dambetan01.exceptions.NotFoundException;
 import com.mercadolibre.dambetan01.model.Employee;
 import com.mercadolibre.dambetan01.repository.EmployeeRepository;
 import com.mercadolibre.dambetan01.service.EmployeeService;
@@ -16,6 +17,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee getEmployee(String username) {
-        return employeeRepository.findByUsername(username);
+        Employee employee = employeeRepository.findByUsername(username);
+        if(employee == null) throw new NotFoundException("Usuário "+username+" não encontrado");
+        return  employee;
     }
 }

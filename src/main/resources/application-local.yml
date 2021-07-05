@@ -5,9 +5,9 @@
 spring:
   datasource:
     host: localhost:3306
-    db: projeto_integrador
-    username: root
-    password:
+    db: ${SECRET_DATABASE}
+    username: ${SECRET_USER}
+    password: ${SECRET_PASS}
     initialization-mode: always
 
   jpa:

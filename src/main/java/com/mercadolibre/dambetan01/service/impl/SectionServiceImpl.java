@@ -1,6 +1,7 @@
 package com.mercadolibre.dambetan01.service.impl;
 
 import com.mercadolibre.dambetan01.dtos.SectionDTO;
+import com.mercadolibre.dambetan01.exceptions.NotFoundException;
 import com.mercadolibre.dambetan01.model.Section;
 import com.mercadolibre.dambetan01.repository.SectionRepository;
 import com.mercadolibre.dambetan01.service.SectionService;
@@ -19,6 +20,10 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public Section getSection(SectionDTO sectionDTO) {
-        return sectionRepository.findSectionBySectionCodeAndWarehouse_Id(sectionDTO.getSectionCode(), sectionDTO.getWarehouseCode()).orElseThrow(NoSuchElementException::new);
+        return sectionRepository.findSectionBySectionCodeAndWarehouse_Id(
+                sectionDTO.getSectionCode(),
+                sectionDTO.getWarehouseCode())
+                .orElseThrow(() -> new NotFoundException(
+                        "Seção de id: "+ sectionDTO.getSectionCode()+" e/ou Warehouse "+sectionDTO.getWarehouseCode()+" não encontrado"));
     }
 }
