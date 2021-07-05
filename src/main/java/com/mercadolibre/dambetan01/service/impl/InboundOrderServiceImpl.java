@@ -47,11 +47,17 @@ public class InboundOrderServiceImpl implements InboundOrderService {
             return createAndSaveOrder(inboundOrderDTO, username);
         }
 
+        InboundOrder inboundOrder = saveInboundOrder(inboundOrderDTO, username);
+
+        return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
+    }
+
+    private InboundOrder saveInboundOrder(InboundOrderDTO inboundOrderDTO, String username) {
         SectionDTO sectionDTO = inboundOrderDTO.getSection();
         Supervisor supervisor = supervisorService.getSupervisor(employeeService.getEmployee(username).getId());
         Section section = sectionService.getSection(sectionDTO);
 
-        List<Batch> batches = mapBatchItemsDTO(inboundOrderDTO);
+        List<Batch> batches = mapBatchDTO(inboundOrderDTO);
         InboundOrder inboundOrder = InboundOrder.builder()
                 .supervisor(supervisor)
                 .id(inboundOrderDTO.getOrderNumber())
@@ -61,11 +67,10 @@ public class InboundOrderServiceImpl implements InboundOrderService {
                 .build();
 
         repository.save(inboundOrder);
-
-        return modelMapper.map(inboundOrder, InboundOrderResponseDTO.class);
+        return inboundOrder;
     }
 
-    private List<Batch> mapBatchItemsDTO(InboundOrderDTO inboundOrderDTO) {
+    private List<Batch> mapBatchDTO(InboundOrderDTO inboundOrderDTO) {
         List<BatchDTO> batchDTOS = inboundOrderDTO.getBatchStock();
         List<Batch> batches = new ArrayList<>();
 
@@ -90,20 +95,7 @@ public class InboundOrderServiceImpl implements InboundOrderService {
     }
 
     private InboundOrderResponseDTO createAndSaveOrder(InboundOrderDTO inboundOrderDTO, String username) {
-        SectionDTO sectionDTO = inboundOrderDTO.getSection();
-        Supervisor supervisor = supervisorService.getSupervisor(employeeService.getEmployee(username).getId());
-        Section section = sectionService.getSection(sectionDTO);
-
-        List<Batch> batches = mapBatchItemsDTO(inboundOrderDTO);
-        InboundOrder inboundOrder = InboundOrder.builder()
-                .supervisor(supervisor)
-                .id(inboundOrderDTO.getOrderNumber())
-                .orderDate(inboundOrderDTO.getOrderDate())
-                .section(section)
-                .batchStock(batches)
-                .build();
-
-        repository.save(inboundOrder);
+        saveInboundOrder(inboundOrderDTO, username);
 
         InboundOrder savedInboundOrder = repository.findById(inboundOrderDTO.getOrderNumber()).get();
 
