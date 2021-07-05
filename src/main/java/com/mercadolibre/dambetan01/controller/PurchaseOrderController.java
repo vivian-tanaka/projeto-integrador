@@ -28,7 +28,6 @@ public class PurchaseOrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public double insertPurchaseOder(@Valid @RequestBody NewPurchaseOrderDTO purchaseOrderDTO){
-
-        return 0;
+        return purchaseOrderService.insertAndCalculatePurchaseOrder(purchaseOrderDTO);
     }
 }

@@ -21,4 +21,9 @@ public class ProductServiceImpl implements ProductService {
     public Product getProduct(BatchDTO item) {
         return productRepository.findById(item.getProductId()).orElseThrow(NoSuchElementException::new);
     }
+
+    @Override
+    public Product getProduct(Long id) {
+        return productRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
 }
