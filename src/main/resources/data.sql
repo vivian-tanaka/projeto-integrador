@@ -3,7 +3,7 @@
 #WHERE NOT EXISTS (SELECT role_name FROM role WHERE role_name = 'USER_EMPLOYEE') LIMIT 1;
 
 # Drop all tables, use only for local storages
-# Run program to create empty tables after dropping
+# Run program to create empty tables after dropping then runthe rest of this SQL
 
 #DROP TABLE IF EXISTS warehouse;
 #DROP TABLE IF EXISTS section;
@@ -119,13 +119,13 @@ INSERT IGNORE INTO `inbound_order` (`id`,`order_date`,`section_id`,`supervisor_i
 INSERT IGNORE INTO `inbound_order` (`id`,`order_date`,`section_id`,`supervisor_id`) VALUES (4,'2021-07-02',3,1);
 INSERT IGNORE INTO `inbound_order` (`id`,`order_date`,`section_id`,`supervisor_id`) VALUES (5,'2021-07-02',1,1);
 
-# Insert Batch Items
+# Insert Batches
 
-INSERT IGNORE INTO `batch_item` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (1,12,12,'2021-08-01',2,'2012-05-01','2012-05-01 01:12:00.000000',15,10,1);
-INSERT IGNORE INTO `batch_item` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (2,5,7,'2021-08-15',1,'2012-05-25','2012-05-25 09:15:00.000000',11,5,2);
-INSERT IGNORE INTO `batch_item` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (3,15,3,'2021-08-12',8,'2012-06-23','2012-06-23 04:55:33.000000',0,-6,3);
-INSERT IGNORE INTO `batch_item` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (4,6,18,'2021-07-22',2,'2012-06-22','2012-06-22 05:33:00.000000',20,15,4);
-INSERT IGNORE INTO `batch_item` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (5,7,-2,'2021-09-01',1,'2012-06-07','2012-06-07 07:15:00.000000',0,-5,5);
+INSERT IGNORE INTO `batch` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (1,12,12,'2021-08-01',2,'2012-05-01','2012-05-01 01:12:00.000000',15,10,1);
+INSERT IGNORE INTO `batch` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (2,5,7,'2021-08-15',1,'2012-05-25','2012-05-25 09:15:00.000000',11,5,2);
+INSERT IGNORE INTO `batch` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (3,15,3,'2021-08-12',8,'2012-06-23','2012-06-23 04:55:33.000000',0,-6,3);
+INSERT IGNORE INTO `batch` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (4,6,18,'2021-07-22',2,'2012-06-22','2012-06-22 05:33:00.000000',20,15,4);
+INSERT IGNORE INTO `batch` (`id`,`current_quantity`,`current_temperature`,`due_date`,`initial_quantity`,`manufacturing_date`,`manufacturing_time`,`max_temperature`,`min_temperature`,`product_id`) VALUES (5,7,-2,'2021-09-01',1,'2012-06-07','2012-06-07 07:15:00.000000',0,-5,5);
 
 # Create inboundo order 1 to batch stock 1
 
@@ -133,8 +133,15 @@ INSERT IGNORE INTO `g3projdb`.`inbound_order_batch_stock` (`inbound_order_id`, `
 
 # US02 - Update values and conditions
 
-                                                                                                                                                                                                                                                                # Update section codes
+# Update section codes
 
-UPDATE `g3projdb`.`section` SET `section_code` = 'FF' WHERE (`section_code` = '1');
-UPDATE `g3projdb`.`section` SET `section_code` = 'RS' WHERE (`section_code` = '2');
-UPDATE `g3projdb`.`section` SET `section_code` = 'FF' WHERE (`section_code` = '3');
+UPDATE `g3projdb`.`section` SET `section_code` = 'FS', `max_temperature` = 10, `min_temperature` = 4  WHERE (`section_code` = '1');
+UPDATE `g3projdb`.`section` SET `section_code` = 'RS', `max_temperature` = 5, `min_temperature` = 0   WHERE (`section_code` = '2');
+UPDATE `g3projdb`.`section` SET `section_code` = 'FF', `max_temperature` = -10, `min_temperature` = -25   WHERE (`section_code` = '3');
+
+# Update batch_item to batch
+
+ALTER TABLE `g3projdb`.`batch_item` RENAME TO  `g3projdb`.`batch` ;
+
+# Inserir role de buyer
+INSERT IGNORE INTO `role` (`id`,`role_name`) VALUES (2,'USER_BUYER');
