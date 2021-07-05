@@ -6,6 +6,8 @@ spring:
   datasource:
     host: localhost:3306
     db: projeto_integrador
+#    host: proxysql.master.meliseginf.com:6612
+#    db: g3projdb
     username: root
     password:
     initialization-mode: always
