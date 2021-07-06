@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import static com.mercadolibre.projetointegrador.util.ScopeUtils.SCOPE_VALUE;
 import static com.mercadolibre.projetointegrador.util.ScopeUtils.isLocalScope;
 import static java.lang.String.format;

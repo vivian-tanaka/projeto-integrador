@@ -2,18 +2,18 @@ package com.mercadolibre.projetointegrador.service.crud.impl;
 
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
 import com.mercadolibre.projetointegrador.dtos.InboundOrderDTO;
+import com.mercadolibre.projetointegrador.dtos.response.InboundOrderResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.mapper.BatchMapper;
-import com.mercadolibre.projetointegrador.model.*;
-import com.mercadolibre.projetointegrador.repository.*;
+import com.mercadolibre.projetointegrador.model.InboundOrder;
+import com.mercadolibre.projetointegrador.model.Section;
+import com.mercadolibre.projetointegrador.model.Supervisor;
+import com.mercadolibre.projetointegrador.repository.InboundOrderRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,18 +26,28 @@ public class InboundOrderServiceImpl implements ICRUD<InboundOrder> {
     private final SupervisorServiceImpl supervisorService;
     private final BatchServiceImpl batchService;
 
-    public List<BatchDTO> create(InboundOrderDTO inboundOrderDTO, String username) {
+    public InboundOrderResponseDTO create(InboundOrderDTO inboundOrderDTO, String username) {
         InboundOrder inboundOrder = validateInboundOrder(inboundOrderDTO, username);
-        create(inboundOrder);
+        inboundOrder.setBatchStock(batchService.create(inboundOrderDTO.getBatchStock()));
+        InboundOrder savedInboundOrder = create(inboundOrder);
+        List<BatchDTO> batchDTOS = batchMapper.mapListDtoToEntity(
+                findById(savedInboundOrder.getId())
+                        .getBatchStock());
 
-        return batchMapper.mapListDtoToEntity(
-                findById(inboundOrderDTO.getId())
-                        .getBatchStock()
-        );
+        return new InboundOrderResponseDTO().builder()
+                .id(inboundOrder.getId())
+                .batchStock(batchDTOS)
+                .build();
     }
 
-    public List<BatchDTO> update(InboundOrderDTO inboundOrderDTO, String username) {
+    public List<BatchDTO> update(InboundOrderDTO inboundOrderDTO, Long idInboundOrder, String username) {
         InboundOrder inboundOrder = validateInboundOrder(inboundOrderDTO, username);
+        inboundOrder.setId(idInboundOrder);
+
+        inboundOrder.setBatchStock(
+                batchService.update(inboundOrderDTO.getBatchStock())
+        );
+
         return batchMapper.mapListDtoToEntity(
                 update(inboundOrder)
                         .getBatchStock()
@@ -51,7 +61,8 @@ public class InboundOrderServiceImpl implements ICRUD<InboundOrder> {
 
     @Override
     public InboundOrder update(InboundOrder inboundOrder) {
-        findById(inboundOrder.getId());
+        InboundOrder foundInboundOrder = findById(inboundOrder.getId());
+        inboundOrder.setId(foundInboundOrder.getId());
         return create(inboundOrder);
     }
 
@@ -76,14 +87,10 @@ public class InboundOrderServiceImpl implements ICRUD<InboundOrder> {
 
         Section section = sectionService.findSectionBySectionCodeAndWarehouseId(inboundOrderDTO.getSection());
 
-        List<Batch> batches = batchService.buildBatch(inboundOrderDTO.getBatchStock());
-
         InboundOrder inboundOrder = InboundOrder.builder()
                 .supervisor(supervisor)
-                .id(inboundOrderDTO.getId())
                 .orderDate(inboundOrderDTO.getOrderDate())
                 .section(section)
-                .batchStock(batches)
                 .build();
 
         return inboundOrder;

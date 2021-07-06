@@ -22,7 +22,6 @@ import java.util.List;
 @NoArgsConstructor
 public class InboundOrderDTO {
 
-    @NotNull(message = "OrderNumber é obrigatório")
     @JsonProperty("orderNumber")
     private Long id;
 

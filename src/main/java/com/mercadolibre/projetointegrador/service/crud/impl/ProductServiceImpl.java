@@ -1,6 +1,5 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
-import com.mercadolibre.projetointegrador.dtos.BatchDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.repository.ProductRepository;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service

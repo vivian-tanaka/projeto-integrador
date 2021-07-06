@@ -1,6 +1,5 @@
 package com.mercadolibre.projetointegrador.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -24,8 +23,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BatchDTO {
 
-    @NotNull(message = "batchNumber é obrigatório")
-    @Positive
     private Long batchNumber;
 
     @NotNull(message = "productId é obrigatório")
