@@ -17,12 +17,13 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     @Override
     public Product create(Product product) {
-        return null;
+        return productRepository.save(product);
     }
 
     @Override
     public Product update(Product product) {
-        return null;
+        productRepository.findById(product.getId());
+        return productRepository.save(product);
     }
 
     @Override
