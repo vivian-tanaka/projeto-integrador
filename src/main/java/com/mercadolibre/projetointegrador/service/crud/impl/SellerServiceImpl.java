@@ -42,7 +42,7 @@ public class SellerServiceImpl implements ICRUD<Seller> {
 
     @Override
     public List<Seller> findAll() {
-        //TODO Validate supervisor
+        //TODO Validate  supervisor
         return sellerRepository.findAll();
     }
 
