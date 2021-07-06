@@ -12,12 +12,12 @@
     </parent>
 
     <groupId>com.mercadolibre</groupId>
-    <artifactId>dambetan01</artifactId>
+    <artifactId>projetointegrador</artifactId>
     <version>last</version>
     <packaging>jar</packaging>
 
-    <name>dambetan01</name>
-    <description>dambetan01</description>
+    <name>projetointegrador</name>
+    <description>Projeto integrador grupo 3</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
