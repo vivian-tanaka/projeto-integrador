@@ -5,10 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    Employee findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+    Optional<Employee> findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
-    Employee findByUsername(String username);
+    Optional<Employee> findByUsername(String username);
 }

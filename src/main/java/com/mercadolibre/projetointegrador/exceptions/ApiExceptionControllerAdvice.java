@@ -18,22 +18,6 @@ public class ApiExceptionControllerAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiExceptionControllerAdvice.class);
 
-    @ExceptionHandler
-    @ResponseBody
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleException(Exception ex) {
-
-        StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
-
-        return new ApiError(
-                ex.getClass().getName(),
-                ex.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value()
-                );
-    }
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({
             BadRequestException.class,

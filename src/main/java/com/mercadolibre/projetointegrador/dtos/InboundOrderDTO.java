@@ -1,5 +1,6 @@
 package com.mercadolibre.projetointegrador.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -22,7 +23,8 @@ import java.util.List;
 public class InboundOrderDTO {
 
     @NotNull(message = "OrderNumber é obrigatório")
-    private Long orderNumber;
+    @JsonProperty("orderNumber")
+    private Long id;
 
     @NotNull(message = "OrderDate é obrigatório")
     @JsonDeserialize(using = LocalDateDeserializer.class)
