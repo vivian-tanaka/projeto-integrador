@@ -1,8 +1,10 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
+import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Product;
+import com.mercadolibre.projetointegrador.repository.BatchRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import com.newrelic.api.agent.DatastoreParameters;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +18,20 @@ import java.util.List;
 @Service
 public class BatchServiceImpl implements ICRUD<Batch> {
 
-    private final ProductServiceImpl productService;
     private final ModelMapper modelMapper;
+    private final ProductServiceImpl productService;
+    private final BatchRepository batchRepository;
 
     @Override
     public Batch create(Batch batch) {
-        return null;
+        return batchRepository.save(batch);
     }
 
     @Override
     public Batch update(Batch batch) {
-        return null;
+        Batch foundBatch = findById(batch.getId());
+        batch.setId(foundBatch.getId());
+        return create(batch);
     }
 
     @Override
@@ -36,7 +41,7 @@ public class BatchServiceImpl implements ICRUD<Batch> {
 
     @Override
     public Batch findById(Long id) {
-        return null;
+        return batchRepository.findById(id).orElseThrow(() -> new NotFoundException("Batch with id " + id + " not found"));
     }
 
     @Override
@@ -44,11 +49,28 @@ public class BatchServiceImpl implements ICRUD<Batch> {
         return null;
     }
 
-    public List<Batch> buildBatch(List<BatchDTO> batchDTOS) {
+    public List<Batch> create(List<BatchDTO> batchDTOS) {
+
         List<Batch> batches = new ArrayList<>();
 
         for (BatchDTO batch : batchDTOS) {
             Product product = productService.findById(batch.getProductId());
+            Batch batchItem = modelMapper.map(batch, Batch.class);
+            batchItem.setProduct(product);
+            batches.add(batchItem);
+        }
+
+        return batches;
+    }
+
+    public List<Batch> update(List<BatchDTO> batchDTOS) {
+
+        List<Batch> batches = new ArrayList<>();
+
+        for (BatchDTO batch : batchDTOS) {
+            Product product = productService.findById(batch.getProductId());
+            Batch foundBatch = findById(batch.getBatchNumber());
+            batch.setBatchNumber(foundBatch.getId());
             Batch batchItem = modelMapper.map(batch, Batch.class);
             batchItem.setProduct(product);
             batches.add(batchItem);

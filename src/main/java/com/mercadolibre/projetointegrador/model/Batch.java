@@ -15,16 +15,12 @@ import java.time.LocalDateTime;
 public class Batch {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-//    @ManyToOne
-//    @JoinColumn(name = "inbound_order_id")
-//    private InboundOrder inboundOrder;
 
     private double currentTemperature;
     private double minTemperature;

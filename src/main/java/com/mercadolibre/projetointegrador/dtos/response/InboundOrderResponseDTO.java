@@ -1,18 +1,18 @@
-package com.mercadolibre.projetointegrador.dtos;
+package com.mercadolibre.projetointegrador.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.mercadolibre.projetointegrador.dtos.BatchDTO;
+import com.mercadolibre.projetointegrador.dtos.SectionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,18 +20,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InboundOrderDTO {
+public class InboundOrderResponseDTO {
 
     @JsonProperty("orderNumber")
     private Long id;
-
-    @NotNull(message = "OrderDate é obrigatório")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate orderDate;
-
-    @Valid
-    private SectionDTO section;
 
     @Valid
     private List<BatchDTO> batchStock = new ArrayList<>();

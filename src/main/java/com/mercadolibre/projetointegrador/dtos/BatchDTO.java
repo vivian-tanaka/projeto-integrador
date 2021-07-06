@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BatchDTO {
 
-    @NotNull(message = "batchNumber é obrigatório")
-    @Positive
     private Long batchNumber;
 
     @NotNull(message = "productId é obrigatório")
