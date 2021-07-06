@@ -5,11 +5,11 @@
 spring:
   datasource:
     host: localhost:3306
-    db: projeto_integrador
-#    host: proxysql.master.meliseginf.com:6612
-#    db: g3projdb
-    username: root
-    password:
+    #    host: proxysql.master.meliseginf.com:6612
+    db: ${SECRET_DATABASE}
+    #    db: g3projdb
+    username: ${SECRET_USER}
+    password: ${SECRET_PASS}
     initialization-mode: always
 
   jpa:

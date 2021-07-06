@@ -21,10 +21,10 @@ import java.util.List;
 @NoArgsConstructor
 public class InboundOrderDTO {
 
-    @NotNull(message = "OrderNumber is required")
+    @NotNull(message = "OrderNumber é obrigatório")
     private Long orderNumber;
 
-    @NotNull(message = "OrderDate is required")
+    @NotNull(message = "OrderDate é obrigatório")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate orderDate;

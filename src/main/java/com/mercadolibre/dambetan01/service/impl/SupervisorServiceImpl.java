@@ -1,5 +1,6 @@
 package com.mercadolibre.dambetan01.service.impl;
 
+import com.mercadolibre.dambetan01.exceptions.NotFoundException;
 import com.mercadolibre.dambetan01.model.Supervisor;
 import com.mercadolibre.dambetan01.repository.SupervisorRepository;
 import com.mercadolibre.dambetan01.service.SupervisorService;
@@ -18,6 +19,6 @@ public class SupervisorServiceImpl implements SupervisorService {
 
     @Override
     public Supervisor getSupervisor(Long id) {
-        return supervisorRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return supervisorRepository.findById(id).orElseThrow(() -> new NotFoundException("Supervisor de id: "+id+" não encontrado"));
     }
 }

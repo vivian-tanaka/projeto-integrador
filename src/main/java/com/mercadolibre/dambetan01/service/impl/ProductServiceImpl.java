@@ -1,6 +1,7 @@
 package com.mercadolibre.dambetan01.service.impl;
 
 import com.mercadolibre.dambetan01.dtos.BatchDTO;
+import com.mercadolibre.dambetan01.exceptions.NotFoundException;
 import com.mercadolibre.dambetan01.model.Product;
 import com.mercadolibre.dambetan01.repository.ProductRepository;
 import com.mercadolibre.dambetan01.service.ProductService;
@@ -19,7 +20,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(BatchDTO item) {
-        return productRepository.findById(item.getProductId()).orElseThrow(NoSuchElementException::new);
+        return productRepository.findById(item.getProductId())
+                .orElseThrow(() -> new NotFoundException("Produto de id: "+item.getProductId()+" não encontrado"));
     }
 
     @Override

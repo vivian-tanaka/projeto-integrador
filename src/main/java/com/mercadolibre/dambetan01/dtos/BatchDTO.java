@@ -15,6 +15,7 @@ import org.checkerframework.checker.index.qual.Positive;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -24,40 +25,42 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BatchDTO {
 
-    @NotNull(message = "batchNumber is required")
+    @NotNull(message = "batchNumber é obrigatório")
     @Positive
     private Long batchNumber;
 
-    @NotNull(message = "productId is required")
+    @NotNull(message = "productId é obrigatório")
     @Positive
     private Long productId;
 
-    @NotNull( message = "currentTemperature is required")
+    @NotNull( message = "currentTemperature é obrigatório")
     private double currentTemperature;
 
-    @NotNull(message = "minTemperature is required")
+    @NotNull(message = "minTemperature é obrigatório")
     private double minTemperature;
 
-    @NotNull(message = "maxTemperature is required")
+    @NotNull(message = "maxTemperature é obrigatório")
     private double maxTemperature;
 
-    @NotNull(message = "initialQuantity is required")
+    @NotNull(message = "initialQuantity é obrigatório")
+    @PositiveOrZero
     private int initialQuantity;
 
-    @NotNull(message = "currentQuantity is required")
+    @NotNull(message = "currentQuantity é obrigatório")
+    @PositiveOrZero
     private int currentQuantity;
 
-    @NotNull(message = "manufacturingDate is required")
+    @NotNull(message = "manufacturingDate é obrigatório")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate manufacturingDate;
 
-    @NotNull(message = "manufacturingTime is required")
+    @NotNull(message = "manufacturingTime é obrigatório")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime manufacturingTime;
 
-    @NotNull(message = "dueDate is required")
+    @NotNull(message = "dueDate é obrigatório")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dueDate;

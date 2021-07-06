@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class SectionDTO {
 
-    @NotBlank(message = "sectionCode is required")
+    @NotBlank(message = "sectionCode é obrigatório")
     private String sectionCode;
 
-    @NotNull(message = "warehouseCode is required")
+    @NotNull(message = "warehouseCode é obrigatório")
     private Long warehouseCode;
 }

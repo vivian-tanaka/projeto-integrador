@@ -3,7 +3,6 @@ package com.mercadolibre.dambetan01.config;
 import com.mercadolibre.dambetan01.exceptions.ApiError;
 import com.mercadolibre.dambetan01.exceptions.ApiException;
 import com.newrelic.api.agent.NewRelic;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -35,16 +36,6 @@ public class ControllerExceptionHandler {
 		}
 
 		ApiError apiError = new ApiError(e.getCode(), e.getDescription(), statusCode);
-		return ResponseEntity.status(apiError.getStatus())
-				.body(apiError);
-	}
-
-	@ExceptionHandler(value = { Exception.class })
-	protected ResponseEntity<ApiError> handleUnknownException(Exception e) {
-		LOGGER.error("Internal error", e);
-		NewRelic.noticeError(e);
-
-		ApiError apiError = new ApiError("internal_error", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return ResponseEntity.status(apiError.getStatus())
 				.body(apiError);
 	}

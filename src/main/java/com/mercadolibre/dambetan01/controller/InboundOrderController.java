@@ -23,27 +23,30 @@ public class InboundOrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public InboundOrderResponseDTO create(@Valid @RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
-        String jwtToken = getToken(request);
+    public InboundOrderResponseDTO create(
+            @Valid @RequestBody InboundOrderDTO inboundOrderDTO,
+            @RequestHeader(value="Authorization") String token){
+        String username = getUsername(token);
         InboundOrderResponseDTO response = inboundOrderService
-                .createInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
+                .createInboundOrder(inboundOrderDTO, username);
         return response;
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public InboundOrderResponseDTO update(@RequestBody InboundOrderDTO inboundOrderDTO, HttpServletRequest request){
-        String jwtToken = getToken(request);
+    public InboundOrderResponseDTO update(
+            @Valid @RequestBody InboundOrderDTO inboundOrderDTO,
+            @RequestHeader(value="Authorization") String token){
+        String username = getUsername(token);
         InboundOrderResponseDTO response = inboundOrderService
-                .updateInboundOrder(inboundOrderDTO, SessionServiceImpl.getUsername(jwtToken));
+                .updateInboundOrder(inboundOrderDTO, username);
         return response;
     }
 
-    private String getToken(HttpServletRequest request){
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.replace("Bearer ", "");
+    private String getUsername(String token){
+        if(token != null && token.startsWith("Bearer ")) {
+            String username = SessionServiceImpl.getUsername(token.replace("Bearer ", ""));
+            return username;
         }
         return null;
     }
