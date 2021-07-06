@@ -46,7 +46,6 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
                 .buyer(buyer)
                 .build();
     }
-
     private double calculateTotalOrderValue(NewPurchaseOrderDTO newPurchaseOrderDTO) {
         return newPurchaseOrderDTO.getPurchaseOrder().getProducts().stream()
                 .mapToDouble(product -> productService.findById(product.getProductId()).getPrice() * product.getQuantity()).sum();
