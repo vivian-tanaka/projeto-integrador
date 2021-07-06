@@ -3,25 +3,23 @@ package com.mercadolibre.projetointegrador.service.impl;
 import com.mercadolibre.projetointegrador.dtos.response.EmployeeResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.ApiException;
 import com.mercadolibre.projetointegrador.model.Employee;
-import com.mercadolibre.projetointegrador.repository.EmployeeRepository;
 import com.mercadolibre.projetointegrador.service.ISessionService;
+import com.mercadolibre.projetointegrador.service.crud.impl.EmployeeServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import javassist.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class SessionServiceImpl implements ISessionService {
-    private final EmployeeRepository employeeRepository;
-
-    public SessionServiceImpl(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    private final EmployeeServiceImpl employeeService;
 
     /**
      * Realiza la validación del usuario y contraseña ingresado.
@@ -35,18 +33,14 @@ public class SessionServiceImpl implements ISessionService {
     @Override
     public EmployeeResponseDTO login(String username, String password) throws ApiException {
         //Voy a la base de datos y reviso que el usuario y contraseña existan.
-        Employee employee = employeeRepository.findByUsernameAndPassword(username, password);
 
-        if (employee != null) {
-            String token = getJWTToken(employee);
-            EmployeeResponseDTO user = new EmployeeResponseDTO();
-            user.setUsername(username);
-            user.setToken(token);
-            return user;
-        } else {
-            throw new ApiException("404", "Usuario y/o contraseña incorrecto", 404);
-        }
+        Employee employee = employeeService.findByUsernameAndPassword(username,password);
 
+        String token = getJWTToken(employee);
+        EmployeeResponseDTO user = new EmployeeResponseDTO();
+        user.setUsername(username);
+        user.setToken(token);
+        return user;
     }
 
     /**
@@ -90,8 +84,19 @@ public class SessionServiceImpl implements ISessionService {
      * @return
      */
     public static String getUsername(String token) {
-        Claims claims = decodeJWT(token);
-        return claims.get("sub", String.class);
+        if(token != null && token.startsWith("Bearer ")) {
+            Claims claims = decodeJWT(token.replace("Bearer ", ""));
+            return claims.get("sub", String.class);
+        }
+        return null;
     }
+
+/*    private String getUsername(String token){
+        if(token != null && token.startsWith("Bearer ")) {
+            String username = SessionServiceImpl.getUsername(token.replace("Bearer ", ""));
+            return username;
+        }
+        return null;
+    }*/
 
 }
