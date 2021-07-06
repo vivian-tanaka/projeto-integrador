@@ -1,3 +1,0 @@
-INSERT INTO `role` (`id`, `role_name`)
-SELECT * FROM (SELECT NULL, 'USER_EMPLOYEE') AS tmp
-WHERE NOT EXISTS (SELECT role_name FROM role WHERE role_name = 'USER_EMPLOYEE') LIMIT 1;
