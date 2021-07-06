@@ -1,7 +1,6 @@
 package com.mercadolibre.projetointegrador.config;
 
 import com.mercadolibre.threading.executor.MeliExecutors;
-import java.util.concurrent.ExecutorService;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +13,8 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+
+import java.util.concurrent.ExecutorService;
 
 @Configuration
 @EnableAsync

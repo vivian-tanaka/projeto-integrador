@@ -1,7 +1,7 @@
 package com.mercadolibre.projetointegrador.integration;
 
-import com.mercadolibre.restclient.mock.RequestMockHolder;
 import com.mercadolibre.projetointegrador.Application;
+import com.mercadolibre.restclient.mock.RequestMockHolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

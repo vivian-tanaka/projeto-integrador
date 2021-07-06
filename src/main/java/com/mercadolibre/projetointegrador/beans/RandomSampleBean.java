@@ -1,8 +1,9 @@
 package com.mercadolibre.projetointegrador.beans;
 
 import com.mercadolibre.projetointegrador.dtos.SampleDTO;
-import java.util.Random;
 import org.springframework.stereotype.Component;
+
+import java.util.Random;
 
 @Component
 public class RandomSampleBean {

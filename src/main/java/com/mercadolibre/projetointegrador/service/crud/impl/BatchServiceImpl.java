@@ -6,7 +6,6 @@ import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.repository.BatchRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
-import com.newrelic.api.agent.DatastoreParameters;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

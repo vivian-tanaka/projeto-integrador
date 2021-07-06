@@ -1,7 +1,8 @@
 package com.mercadolibre.projetointegrador.util;
 
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 public interface ScopeUtils {
 	String SCOPE_SUFFIX = "SCOPE_SUFFIX";
