@@ -1,6 +1,8 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
+import com.mercadolibre.projetointegrador.dtos.ProductDTO;
+import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Product;
@@ -8,10 +10,13 @@ import com.mercadolibre.projetointegrador.repository.BatchRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -41,6 +46,10 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     @Override
     public Batch findById(Long id) {
         return batchRepository.findById(id).orElseThrow(() -> new NotFoundException("Batch with id " + id + " not found"));
+    }
+
+    public void saveAll(List<Batch> batchList){
+        batchRepository.saveAll(batchList);
     }
 
     @Override
@@ -76,5 +85,24 @@ public class BatchServiceImpl implements ICRUD<Batch> {
         }
 
         return batches;
+    }
+
+    public Batch findBatchContainingValidProduct(Long id, int quantity){
+        return batchRepository.findAll().stream()
+                .filter(batch -> batch.getProduct().getId().equals(id))
+                .filter(batch -> batch.getCurrentQuantity() >= quantity)
+                .filter(batch -> batch.getDueDate().isAfter(LocalDate.now().plusWeeks(3)))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Insufficient or non-existent units of product with id " + id + " in stock."));
+    }
+
+    public Batch updateCurrentQuantity (Batch batch, int quantity){
+        batch.setCurrentQuantity(batch.getCurrentQuantity() - quantity);
+        return batch;
+    }
+
+    //test conversion for request
+    public BatchDTO map(Batch batch){
+        return modelMapper.map(batch, BatchDTO.class);
     }
 }
