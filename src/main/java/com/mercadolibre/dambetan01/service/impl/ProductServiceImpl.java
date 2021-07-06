@@ -23,4 +23,9 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(item.getProductId())
                 .orElseThrow(() -> new NotFoundException("Produto de id: "+item.getProductId()+" não encontrado"));
     }
+
+    @Override
+    public Product getProduct(Long id) {
+        return productRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
 }
