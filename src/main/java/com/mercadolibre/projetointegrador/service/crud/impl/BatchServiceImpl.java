@@ -100,9 +100,4 @@ public class BatchServiceImpl implements ICRUD<Batch> {
         batch.setCurrentQuantity(batch.getCurrentQuantity() - quantity);
         return batch;
     }
-
-    //test conversion for request
-    public BatchDTO map(Batch batch){
-        return modelMapper.map(batch, BatchDTO.class);
-    }
 }
