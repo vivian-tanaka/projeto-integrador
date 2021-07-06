@@ -31,12 +31,14 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     @Override
     public void delete(Long id) {
+        productRepository.findById(id);
         productRepository.deleteById(id);
     }
 
     @Override
     public Product findById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Produto de id: " + id + " não encontrado"));
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Produto de id: " + id + " não encontrado"));
     }
 
     @Override
