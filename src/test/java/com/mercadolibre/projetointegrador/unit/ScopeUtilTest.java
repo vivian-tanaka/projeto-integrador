@@ -1,9 +1,11 @@
 package com.mercadolibre.projetointegrador.unit;
 
 import com.mercadolibre.projetointegrador.util.ScopeUtils;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ScopeUtilTest {

@@ -5,16 +5,15 @@ import com.mercadolibre.projetointegrador.dtos.InboundOrderDTO;
 import com.mercadolibre.projetointegrador.dtos.response.InboundOrderResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.mapper.BatchMapper;
-import com.mercadolibre.projetointegrador.model.*;
-import com.mercadolibre.projetointegrador.repository.*;
+import com.mercadolibre.projetointegrador.model.InboundOrder;
+import com.mercadolibre.projetointegrador.model.Section;
+import com.mercadolibre.projetointegrador.model.Supervisor;
+import com.mercadolibre.projetointegrador.repository.InboundOrderRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

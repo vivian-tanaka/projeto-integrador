@@ -1,9 +1,9 @@
 package com.mercadolibre.projetointegrador.unit.beans;
 
-import com.mercadolibre.projetointegrador.dtos.SampleDTO;
 import com.mercadolibre.projetointegrador.beans.RandomSampleBean;
-
+import com.mercadolibre.projetointegrador.dtos.SampleDTO;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RandomSampleBeanTest {
