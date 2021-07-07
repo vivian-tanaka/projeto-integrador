@@ -1,8 +1,8 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
+import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
-import com.mercadolibre.projetointegrador.model.Product;
-import com.mercadolibre.projetointegrador.model.Seller;
+import com.mercadolibre.projetointegrador.model.*;
 import com.mercadolibre.projetointegrador.repository.ProductRepository;
 import com.mercadolibre.projetointegrador.repository.SellerRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
@@ -17,6 +17,8 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
+    private final EmployeeServiceImpl employeeService;
+    private final SectionServiceImpl sectionService;
 
     @Override
     public Product create(Product product) {
@@ -53,5 +55,14 @@ public class ProductServiceImpl implements ICRUD<Product> {
     public Product findByName(String name){
         return productRepository.findByName(name);
     }
+
+    public List<ProductSectionResponseDTO> findSectionByProductId(Integer productId, String orderBy, String username) {
+        Warehouse warehouse = employeeService.findByUsername(username).getWarehouse();
+        List<Section> sections = warehouse.getSections();
+
+        return null;
+    }
+
+
 
 }
