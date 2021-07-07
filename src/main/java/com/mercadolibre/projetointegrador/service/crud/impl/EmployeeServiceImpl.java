@@ -28,7 +28,7 @@ public class EmployeeServiceImpl implements ICRUD<Employee> {
 
     @Override
     public Employee create(Employee employee) {
-        return null;
+        return employeeRepository.save(employee);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class SellerController {
         return sellerService.findByName(name);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/seller/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Seller findAllBySellerName(@PathVariable String name){
         return sellerService.findByName(name);

@@ -28,7 +28,7 @@ public class ProductController {
         return productService.create(product);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Product update(
             //TODO validate seller or supervisor
@@ -51,19 +51,19 @@ public class ProductController {
         return productService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Product findById(@PathVariable Long id){
         return productService.findById(id);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Product findByName(@PathVariable String name){
         return productService.findByName(name);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/seller/{name}")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAllBySellerName(@PathVariable String name){
         return productService.findAllBySellerName(name);
