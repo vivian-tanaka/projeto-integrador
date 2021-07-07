@@ -15,10 +15,9 @@
 -- #DROP TABLE IF EXISTS inbound_order;
 -- #DROP TABLE IF EXISTS batch_item;
 
-create schema g3projdb
+--create schema g3projdb
 
-USE g3projdb;
-
+--USE g3projdb;
 
 SET sql_safe_updates = 0;
 
@@ -97,14 +96,14 @@ INSERT IGNORE INTO `seller` (`id`) VALUES (6);
 --
 -- # Insert Products
 --
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (1,'danoninho do dinossauro','Danone',20,10,1);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (2,'bolo caseiro','Bolo',12,9,2);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (3,'alface crespa','Alface',2,7,3);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (4,'repolho roxo','Repolho',5,8,2);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (5,'picanha do zé','Picanha',35,10,4);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (6,'gelo','Gelo',8,7,5);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (7,'batata tinha','Batata',5,7.5,6);
-INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`) VALUES (8,'pipoca','Pipoca',3,7,6);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (1,'danoninho do dinossauro','Danone',20,10,1,2);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (2,'bolo caseiro','Bolo',12,9,2,1);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (3,'alface crespa','Alface',2,7,3,2);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (4,'repolho roxo','Repolho',5,8,2,1);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (5,'picanha do zé','Picanha',35,10,4,3);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (6,'gelo','Gelo',8,7,5,3);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (7,'batata tinha','Batata',5,7.5,6,1);
+INSERT IGNORE INTO `product` (`id`,`description`,`name`,`price`,`rating`,`seller_id`, `section_code`) VALUES (8,'pipoca','Pipoca',3,7,6,1);
 --
 -- # Insert Supervisors
 --

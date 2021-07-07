@@ -1,10 +1,12 @@
 package com.mercadolibre.projetointegrador.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import jdk.jfr.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,7 @@ public class PurchaseOrderDTO {
     private LocalDate date;
 
     @JsonProperty("buyerId")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
     private OrderStatusDTO orderStatus;

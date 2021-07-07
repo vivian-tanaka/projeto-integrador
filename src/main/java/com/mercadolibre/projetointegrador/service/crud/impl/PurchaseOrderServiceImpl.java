@@ -2,19 +2,16 @@ package com.mercadolibre.projetointegrador.service.crud.impl;
 
 import com.mercadolibre.projetointegrador.dtos.NewPurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.dtos.ProductDTO;
+import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
-import com.mercadolibre.projetointegrador.model.Batch;
-import com.mercadolibre.projetointegrador.model.Buyer;
-import com.mercadolibre.projetointegrador.model.Product;
-import com.mercadolibre.projetointegrador.model.PurchaseOrder;
+import com.mercadolibre.projetointegrador.model.*;
 import com.mercadolibre.projetointegrador.repository.PurchaseOrderRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,6 +23,7 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
     private final BuyerServiceImpl buyerService;
     private final ProductServiceImpl productService;
     private final BatchServiceImpl batchService;
+    private final SectionServiceImpl sectionService;
     
     public List<Product> getProducts(Long id) {
         PurchaseOrder purchaseOrder = findById(id);
@@ -84,6 +82,23 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     @Override
     public List<PurchaseOrder> findAll() {
+        return null;
+    }
+
+    public Set<Product> getSectorProducts(String category) {
+        List<Section> sections = sectionService.findSectionsBySectionCode(category);
+        Set<Product> productSet = new HashSet<>();
+        for(Section s : sections){
+            productSet.addAll(s.getProducts());
+        }
+        if(productSet.isEmpty()){
+            throw new NotFoundException("No products found in the section with cod " +category);
+        }
+        return productSet;
+    }
+
+    public PurchaseOrder updatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, Long id) {
+        PurchaseOrder purchaseOrder = repository.findById(id).orElseThrow(() -> new NotFoundException("No Purchase Order with id "+id));
         return null;
     }
 }
