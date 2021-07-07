@@ -27,8 +27,6 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     private final ProductServiceImpl productService;
     private final BatchRepository batchRepository;
 
-    public void save(Batch batch){batchRepository.save(batch);}
-
     public List<Batch> create(List<BatchDTO> batchDTOS) {
 
         List<Batch> batches = new ArrayList<>();
@@ -83,6 +81,14 @@ public class BatchServiceImpl implements ICRUD<Batch> {
             batches.add(batch);
         }
         batchRepository.saveAll(batches);
+    }
+
+    public void removeCurrentProducts(List<PurchaseProduct> purchaseProducts) {
+        for(PurchaseProduct p : purchaseProducts){
+            Batch matchingBatch = findMatchingBatch(p.getProduct());
+            returnProducts(matchingBatch, p.getQuantity());
+            batchRepository.save(matchingBatch);
+        }
     }
 
     public void updateCurrentQuantity (Batch batch, int quantity){

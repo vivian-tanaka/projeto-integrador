@@ -6,7 +6,6 @@ import com.mercadolibre.projetointegrador.model.*;
 import com.mercadolibre.projetointegrador.repository.PurchaseOrderRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 @Service
 public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
-    private final ModelMapper mapper;
     private final PurchaseOrderRepository repository;
     private final BuyerServiceImpl buyerService;
     private final ProductServiceImpl productService;
@@ -56,7 +54,7 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     public double updatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, Long id) {
         PurchaseOrder purchaseOrder = repository.findById(id).orElseThrow(() -> new NotFoundException("No Purchase Order with id "+id));
-        removeCurrentProducts(purchaseOrder);
+        batchService.removeCurrentProducts(purchaseOrder.getProducts());
         purchaseOrderDTO.setId(id);
         return insertAndCalculatePurchaseOrder(purchaseOrderDTO);
     }
@@ -77,16 +75,6 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
         purchaseOrder.setProducts(products);
 
         return purchaseOrder;
-    }
-
-    private void removeCurrentProducts(PurchaseOrder purchaseOrder) {
-        List<PurchaseProduct> purchaseProducts = purchaseOrder.getProducts();
-
-        for(PurchaseProduct p : purchaseProducts){
-            Batch matchingBatch = batchService.findMatchingBatch(p.getProduct());
-            batchService.returnProducts(matchingBatch, p.getQuantity());
-            batchService.save(matchingBatch);
-        }
     }
 
     private double calculateTotalOrderValue(PurchaseOrder purchaseOrder) {
