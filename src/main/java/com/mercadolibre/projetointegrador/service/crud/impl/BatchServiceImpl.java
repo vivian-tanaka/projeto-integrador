@@ -27,38 +27,7 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     private final ProductServiceImpl productService;
     private final BatchRepository batchRepository;
 
-    @Override
-    public Batch create(Batch batch) {
-        return batchRepository.save(batch);
-    }
-
-    @Override
-    public Batch update(Batch batch) {
-        Batch foundBatch = findById(batch.getId());
-        batch.setId(foundBatch.getId());
-        return create(batch);
-    }
-
-    @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
-    public Batch findById(Long id) {
-        return batchRepository.findById(id).orElseThrow(() -> new NotFoundException("Batch with id " + id + " not found"));
-    }
-
-    public void saveAll(List<Batch> batchList){
-        batchRepository.saveAll(batchList);
-    }
-
     public void save(Batch batch){batchRepository.save(batch);}
-
-    @Override
-    public List<Batch> findAll() {
-        return null;
-    }
 
     public List<Batch> create(List<BatchDTO> batchDTOS) {
 
@@ -106,11 +75,47 @@ public class BatchServiceImpl implements ICRUD<Batch> {
                 .orElseThrow(() -> new NotFoundException("Non existent batch with products of id " + product.getId()));
     }
 
+    public void retrieveProductsFromBatches(PurchaseOrderDTO purchaseOrderDTO) {
+        List<Batch> batches = new ArrayList<>();
+        for (ProductDTO p : purchaseOrderDTO.getProducts()) {
+            Batch batch = findBatchContainingValidProduct(p.getProductId(), p.getQuantity());
+            updateCurrentQuantity(batch, p.getQuantity());
+            batches.add(batch);
+        }
+        batchRepository.saveAll(batches);
+    }
+
     public void updateCurrentQuantity (Batch batch, int quantity){
         batch.setCurrentQuantity(batch.getCurrentQuantity() - quantity);
     }
 
     public void returnProducts(Batch batch, int quantity){
         batch.setCurrentQuantity(batch.getCurrentQuantity() + quantity);
+    }
+
+    @Override
+    public Batch create(Batch batch) {
+        return batchRepository.save(batch);
+    }
+
+    @Override
+    public Batch update(Batch batch) {
+        Batch foundBatch = findById(batch.getId());
+        batch.setId(foundBatch.getId());
+        return create(batch);
+    }
+
+    @Override
+    public void delete(Long id) {
+    }
+
+    @Override
+    public Batch findById(Long id) {
+        return batchRepository.findById(id).orElseThrow(() -> new NotFoundException("Batch with id " + id + " not found"));
+    }
+
+    @Override
+    public List<Batch> findAll() {
+        return null;
     }
 }

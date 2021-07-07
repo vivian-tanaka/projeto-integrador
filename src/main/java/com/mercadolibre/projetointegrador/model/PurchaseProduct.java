@@ -26,4 +26,8 @@ public class PurchaseProduct {
     @JoinColumn(name = "product_id")
     private Product product;
     private Integer quantity;
+
+    public double getSubTotal(){
+        return product.getPrice() * quantity;
+    }
 }

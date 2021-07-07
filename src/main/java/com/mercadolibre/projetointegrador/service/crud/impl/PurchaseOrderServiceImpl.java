@@ -1,6 +1,5 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
-import com.mercadolibre.projetointegrador.dtos.ProductDTO;
 import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.*;
@@ -31,15 +30,10 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     public double insertAndCalculatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) {
         PurchaseOrder purchaseOrder = buildPurchaseOrder(purchaseOrderDTO);
-        List<Batch> batches = new ArrayList<>();
-        for (ProductDTO p : purchaseOrderDTO.getProducts()) {
-            Batch batch = batchService.findBatchContainingValidProduct(p.getProductId(), p.getQuantity());
-            batchService.updateCurrentQuantity(batch, p.getQuantity());
-            batches.add(batch);
-        }
-        batchService.saveAll(batches);
+        batchService.retrieveProductsFromBatches(purchaseOrderDTO);
         repository.save(purchaseOrder);
-        return calculateTotalOrderValue(purchaseOrderDTO);
+
+        return calculateTotalOrderValue(purchaseOrder);
     }
 
     public Set<Product> getSectorProducts(String category) {
@@ -62,16 +56,8 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     public double updatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, Long id) {
         PurchaseOrder purchaseOrder = repository.findById(id).orElseThrow(() -> new NotFoundException("No Purchase Order with id "+id));
-        List<PurchaseProduct> purchaseProducts = purchaseOrder.getProducts();
-
-        for(PurchaseProduct p : purchaseProducts){
-            Batch matchingBatch = batchService.findMatchingBatch(p.getProduct());
-            batchService.returnProducts(matchingBatch, p.getQuantity());
-            batchService.save(matchingBatch);
-        }
-
+        removeCurrentProducts(purchaseOrder);
         purchaseOrderDTO.setId(id);
-
         return insertAndCalculatePurchaseOrder(purchaseOrderDTO);
     }
 
@@ -92,9 +78,19 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
         return purchaseOrder;
     }
-    private double calculateTotalOrderValue(PurchaseOrderDTO purchaseOrderDTO) {
-        return purchaseOrderDTO.getProducts().stream()
-                .mapToDouble(product -> productService.findById(product.getProductId()).getPrice() * product.getQuantity()).sum();
+
+    private void removeCurrentProducts(PurchaseOrder purchaseOrder) {
+        List<PurchaseProduct> purchaseProducts = purchaseOrder.getProducts();
+
+        for(PurchaseProduct p : purchaseProducts){
+            Batch matchingBatch = batchService.findMatchingBatch(p.getProduct());
+            batchService.returnProducts(matchingBatch, p.getQuantity());
+            batchService.save(matchingBatch);
+        }
+    }
+
+    private double calculateTotalOrderValue(PurchaseOrder purchaseOrder) {
+        return purchaseOrder.getProducts().stream().mapToDouble(PurchaseProduct::getSubTotal).sum();
     }
 
     @Override
