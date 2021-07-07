@@ -87,7 +87,7 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     public Set<Product> getSectorProducts(String category) {
         List<Section> sections = sectionService.findSectionsBySectionCode(category);
-        Set<Product> productSet = new HashSet<>();
+        Set<Product> productSet = new LinkedHashSet<>();
         for(Section s : sections){
             productSet.addAll(s.getProducts());
         }
