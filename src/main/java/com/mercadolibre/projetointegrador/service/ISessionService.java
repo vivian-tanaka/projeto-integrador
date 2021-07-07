@@ -1,7 +1,7 @@
 package com.mercadolibre.projetointegrador.service;
 
 
-import com.mercadolibre.projetointegrador.dtos.response.EmployeeResponseDTO;
+import com.mercadolibre.projetointegrador.dtos.response.UserResponseDTO;
 import javassist.NotFoundException;
 
 public interface ISessionService {
@@ -15,5 +15,5 @@ public interface ISessionService {
      * @return
      * @throws NotFoundException
      */
-    EmployeeResponseDTO login(String username, String password) throws NotFoundException;
+    UserResponseDTO login(String username, String password) throws NotFoundException;
 }
