@@ -91,13 +91,12 @@ public class BatchServiceImpl implements ICRUD<Batch> {
         return batchRepository.findAll().stream()
                 .filter(batch -> batch.getProduct().getId().equals(id))
                 .filter(batch -> batch.getCurrentQuantity() >= quantity)
-                .filter(batch -> batch.getDueDate().isAfter(LocalDate.now().plusWeeks(3)))
+                .filter(batch -> batch.getDueDate().isAfter(LocalDate.now().plusDays(20)))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Insufficient or non-existent units of product with id " + id + " in stock."));
     }
 
-    public Batch updateCurrentQuantity (Batch batch, int quantity){
+    public void updateCurrentQuantity (Batch batch, int quantity){
         batch.setCurrentQuantity(batch.getCurrentQuantity() - quantity);
-        return batch;
     }
 }
