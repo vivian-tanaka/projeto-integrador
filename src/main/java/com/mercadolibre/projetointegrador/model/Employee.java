@@ -20,59 +20,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@PrimaryKeyJoinColumn(name="id")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Employee implements Serializable, UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-
-//    @Column(unique = true)
-    private String username;
-    private String password;
-
-//    @Column(unique = true)
-    private String email;
+public class Employee extends User{
 
     @ManyToOne
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "employee_role",
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(x -> new SimpleGrantedAuthority(x.getRoleName())).collect(Collectors.toList());
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
