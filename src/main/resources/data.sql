@@ -14,12 +14,12 @@
 -- #DROP TABLE IF EXISTS supervisor;
 -- #DROP TABLE IF EXISTS inbound_order;
 -- #DROP TABLE IF EXISTS batch_item;
-/*
+
 create schema g3projdb
 
 USE g3projdb;
-*/
-/*
+
+
 SET sql_safe_updates = 0;
 
 -- # US01 - Initial values
@@ -148,4 +148,3 @@ UPDATE `g3projdb`.`section` SET `section_code` = 'FS', `max_temperature` = 10, `
 --
 -- # Inserir role de buyer
 INSERT IGNORE INTO `role` (`id`,`role_name`) VALUES (2,'USER_BUYER');
-*/
