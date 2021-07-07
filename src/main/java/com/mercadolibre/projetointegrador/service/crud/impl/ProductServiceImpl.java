@@ -77,10 +77,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
         List<InboundOrder> inboundOrders = inboundRepository.findAllBySection_Warehouse_Id(warehouse.getId());
 
         Map<Section, List<Batch>> resultMap = new HashMap<>();
-        List<InboundOrder> filteredInboundOrder = inboundOrders
-                .stream()
-                .filter(inboundOrder -> getBatchStreamByProduct(product, inboundOrder).findAny().isPresent())
-                .collect(Collectors.toList());
+        List<InboundOrder> filteredInboundOrder = getInboundOrderByProduct(product, inboundOrders);
 
         for (InboundOrder element : filteredInboundOrder) {
             List<Batch> batchStock = getBatchStreamByProduct(product, element).sorted(Comparator.comparing(Batch::getDueDate)).collect(Collectors.toList());
@@ -93,6 +90,17 @@ public class ProductServiceImpl implements ICRUD<Product> {
         }
 
         return resultMap;
+    }
+
+    private List<InboundOrder> getInboundOrderByProduct(Product product, List<InboundOrder> inboundOrders) {
+        List<InboundOrder> filteredInboundOrder = inboundOrders
+                .stream()
+                .filter(inboundOrder -> getBatchStreamByProduct(product, inboundOrder).findAny().isPresent())
+                .collect(Collectors.toList());
+
+        if(filteredInboundOrder.isEmpty()) throw new NotFoundException("Nenhum batch do produto cadastrado nesse warehouse!");
+
+        return filteredInboundOrder;
     }
 
     private Stream<Batch> getBatchStreamByProduct(Product product, InboundOrder inboundOrder) {
