@@ -78,7 +78,7 @@ public class InboundOrderServiceImpl implements ICRUD<InboundOrder> {
 
     @Override
     public List<InboundOrder> findAll() {
-        return null;
+        return inboundOrderRepository.findAll();
     }
 
     private InboundOrder validateInboundOrder(InboundOrderDTO inboundOrderDTO, String username) {

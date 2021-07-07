@@ -1,54 +1,83 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
-import com.mercadolibre.projetointegrador.dtos.NewPurchaseOrderDTO;
+import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
-import com.mercadolibre.projetointegrador.model.Buyer;
-import com.mercadolibre.projetointegrador.model.Product;
-import com.mercadolibre.projetointegrador.model.PurchaseOrder;
+import com.mercadolibre.projetointegrador.model.*;
 import com.mercadolibre.projetointegrador.repository.PurchaseOrderRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
-    private final ModelMapper mapper;
     private final PurchaseOrderRepository repository;
     private final BuyerServiceImpl buyerService;
     private final ProductServiceImpl productService;
+    private final BatchServiceImpl batchService;
+    private final InboundOrderServiceImpl inboundOrderService;
     
     public List<Product> getProducts(Long id) {
         PurchaseOrder purchaseOrder = findById(id);
-        return purchaseOrder.getProducts();
+        return purchaseOrder.getProducts().stream().map(PurchaseProduct::getProduct).collect(Collectors.toList());
     }
 
-    public double insertAndCalculatePurchaseOrder(NewPurchaseOrderDTO purchaseOrderDTO) {
+    public double insertAndCalculatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) {
         PurchaseOrder purchaseOrder = buildPurchaseOrder(purchaseOrderDTO);
+        batchService.retrieveProductsFromBatches(purchaseOrderDTO);
         repository.save(purchaseOrder);
-        return calculateTotalOrderValue(purchaseOrderDTO);
+        return calculateTotalOrderValue(purchaseOrder);
     }
 
-    private PurchaseOrder buildPurchaseOrder(NewPurchaseOrderDTO newPurchaseOrderDTO) {
-        Buyer buyer = buyerService.findById(newPurchaseOrderDTO.getPurchaseOrder().getId());
-        List<Product> products = newPurchaseOrderDTO.getPurchaseOrder().getProducts().stream()
-                .map(product -> productService.findById(product.getProductId()))
-                .collect(Collectors.toList());
+    public Set<Product> getSectorProducts(String category) {
+        List<InboundOrder> filteredInboundOrders = inboundOrderService.findAll()
+                .stream().filter(inboundOrder -> inboundOrder.getSection()
+                        .getSectionCode().equals(category)).collect(Collectors.toList());
 
-        return PurchaseOrder.builder()
-                .id(newPurchaseOrderDTO.getPurchaseOrder().getId())
-                .products(products)
+        Set<Product> productSet = new LinkedHashSet<>();
+
+        for(InboundOrder io : filteredInboundOrders){
+            for(Batch batch : io.getBatchStock()){
+                productSet.add(batch.getProduct());
+            }
+        }
+        if(productSet.isEmpty()){
+            throw new NotFoundException("No products found in the section with cod " +category);
+        }
+        return productSet;
+    }
+
+    public double updatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, Long id) {
+        PurchaseOrder purchaseOrder = repository.findById(id).orElseThrow(() -> new NotFoundException("No Purchase Order with id "+id));
+        batchService.removeCurrentProducts(purchaseOrder.getProducts());
+        purchaseOrderDTO.setId(id);
+        return insertAndCalculatePurchaseOrder(purchaseOrderDTO);
+    }
+
+    private PurchaseOrder buildPurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) {
+        Buyer buyer = buyerService.findById(purchaseOrderDTO.getBuyerId());
+
+        PurchaseOrder purchaseOrder = PurchaseOrder.builder()
+                .id(purchaseOrderDTO.getId())
                 .buyer(buyer)
                 .build();
+
+        List<PurchaseProduct> products = purchaseOrderDTO.getProducts().stream()
+                .map(
+                        product -> new PurchaseProduct(null, purchaseOrder, productService.findById(product.getProductId()), product.getQuantity())
+                ).collect(Collectors.toList());
+
+        purchaseOrder.setProducts(products);
+
+        return purchaseOrder;
     }
-    private double calculateTotalOrderValue(NewPurchaseOrderDTO newPurchaseOrderDTO) {
-        return newPurchaseOrderDTO.getPurchaseOrder().getProducts().stream()
-                .mapToDouble(product -> productService.findById(product.getProductId()).getPrice() * product.getQuantity()).sum();
+
+    private double calculateTotalOrderValue(PurchaseOrder purchaseOrder) {
+        return purchaseOrder.getProducts().stream().mapToDouble(PurchaseProduct::getSubTotal).sum();
     }
 
     @Override
@@ -63,7 +92,6 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     @Override
     public void delete(Long id) {
-
     }
 
     @Override
