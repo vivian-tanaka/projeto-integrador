@@ -71,6 +71,7 @@ public class ProductController {
         return productService.findAllBySellerName(name);
     }
 
+    //TODO Usar paginação ao invés de fazer a ordenação na mão
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductSectionResponseDTO> findSectionsByProductId(

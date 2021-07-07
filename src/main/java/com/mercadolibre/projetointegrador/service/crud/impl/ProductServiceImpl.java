@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,14 +66,14 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     public List<ProductSectionResponseDTO> findSectionByProductId(Long productId, String orderBy, String username) {
         Warehouse warehouse = employeeService.findByUsername(username).getWarehouse();
-        Map<Section, List<Batch>> sectionBatches = findBatchStockGroupBySection(findById(productId), warehouse);
+        Map<Section, List<Batch>> sectionBatches = findBatchsGroupBySection(findById(productId), warehouse);
 
-        List<ProductSectionResponseDTO> responseDTO = buildProductSectionResponse(sectionBatches, productId);
+        List<ProductSectionResponseDTO> responseDTO = buildProductSectionResponse(sectionBatches, productId, orderBy);
 
         return responseDTO;
     }
 
-    private Map<Section, List<Batch>> findBatchStockGroupBySection(Product product, Warehouse warehouse) {
+    private Map<Section, List<Batch>> findBatchsGroupBySection(Product product, Warehouse warehouse) {
         List<InboundOrder> inboundOrders = inboundRepository.findAllBySection_Warehouse_Id(warehouse.getId());
 
         Map<Section, List<Batch>> resultMap = new HashMap<>();
@@ -86,7 +83,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
                 .collect(Collectors.toList());
 
         for (InboundOrder element : filteredInboundOrder) {
-            List<Batch> batchStock = getBatchStreamByProduct(product, element).collect(Collectors.toList());
+            List<Batch> batchStock = getBatchStreamByProduct(product, element).sorted(Comparator.comparing(Batch::getDueDate)).collect(Collectors.toList());
 
             if (!batchStock.isEmpty() && resultMap.containsKey(element.getSection())) {
                 resultMap.get(element.getSection()).addAll(batchStock);
@@ -104,8 +101,20 @@ public class ProductServiceImpl implements ICRUD<Product> {
                 .filter(batch -> batch.getProduct().getId().equals(product.getId()));
     }
 
-    private List<ProductSectionResponseDTO> buildProductSectionResponse(Map<Section, List<Batch>> sectionBatches, Long productId) {
+    private List<ProductSectionResponseDTO> buildProductSectionResponse(Map<Section, List<Batch>> sectionBatches, Long productId,String orderBy) {
         List<ProductSectionResponseDTO> builtResponse = new ArrayList<>();
+        Comparator<SimpleBatchResponseDTO> sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getId);
+
+        if(!orderBy.isEmpty()){
+            switch(orderBy){
+                case "C":
+                    sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getCurrentQuantity);
+                    break;
+                case "F":
+                    Comparator.comparing(SimpleBatchResponseDTO::getDueDate);
+                    break;
+            }
+        }
 
         for (Map.Entry<Section, List<Batch>> entry : sectionBatches.entrySet()) {
             SectionDTO sectionDTO = SectionDTO.builder()
@@ -121,6 +130,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
                             .batchStock(entry.getValue()
                                     .stream()
                                     .map(batch -> modelMapper.map(batch, SimpleBatchResponseDTO.class))
+                                    .sorted(sortingComparator)
                                     .collect(Collectors.toList()))
                             .build();
 
