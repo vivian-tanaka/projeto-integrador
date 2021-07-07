@@ -14,6 +14,7 @@ INSERT INTO `role` (`id`, `role_name`)
 SELECT * FROM (SELECT NULL, 'ROLE_ADMIN') AS tmp
 WHERE NOT EXISTS (SELECT role_name FROM role WHERE role_name = 'ROLE_ADMIN') LIMIT 1;
 
+
 -- # US01 - Initial values
 --
 -- # Insert Warehouses
@@ -136,3 +137,4 @@ INSERT INTO user_role VALUES(8, 2);
 INSERT INTO user_role VALUES(9, 2);
 INSERT INTO user_role VALUES(10, 2);
 INSERT INTO user_role VALUES(11, 2);
+

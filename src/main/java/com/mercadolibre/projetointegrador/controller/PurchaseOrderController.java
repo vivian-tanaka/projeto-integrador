@@ -1,7 +1,9 @@
 package com.mercadolibre.projetointegrador.controller;
 
+import com.mercadolibre.projetointegrador.dtos.BatchDTO;
 import com.mercadolibre.projetointegrador.dtos.NewPurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.model.Product;
+import com.mercadolibre.projetointegrador.service.crud.impl.BatchServiceImpl;
 import com.mercadolibre.projetointegrador.service.crud.impl.PurchaseOrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

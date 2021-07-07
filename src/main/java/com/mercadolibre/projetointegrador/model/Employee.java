@@ -1,5 +1,6 @@
 package com.mercadolibre.projetointegrador.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 @Inheritance(strategy = InheritanceType.JOINED)
+
 public class Employee extends User{
 
     @ManyToOne

@@ -17,17 +17,19 @@ public class SupervisorServiceImpl implements ICRUD<Supervisor> {
 
     @Override
     public Supervisor create(Supervisor supervisor) {
-        return null;
+        return supervisorRepository.save(supervisor);
     }
 
     @Override
     public Supervisor update(Supervisor supervisor) {
-        return null;
+        supervisorRepository.findById(supervisor.getId());
+        return supervisorRepository.save(supervisor);
     }
 
     @Override
     public void delete(Long id) {
-
+        supervisorRepository.findById(id);
+        supervisorRepository.deleteById(id);
     }
 
     @Override
@@ -38,5 +40,9 @@ public class SupervisorServiceImpl implements ICRUD<Supervisor> {
     @Override
     public List<Supervisor> findAll() {
         return null;
+    }
+
+    public Supervisor findByName(String name) {
+        return supervisorRepository.findSupervisorByUsername(name).orElseThrow();
     }
 }

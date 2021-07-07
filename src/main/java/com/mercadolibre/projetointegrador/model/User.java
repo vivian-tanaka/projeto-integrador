@@ -1,5 +1,7 @@
 package com.mercadolibre.projetointegrador.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +27,15 @@ public class User implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     private String name;
 
+
     @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
 
     @Column(unique = true)

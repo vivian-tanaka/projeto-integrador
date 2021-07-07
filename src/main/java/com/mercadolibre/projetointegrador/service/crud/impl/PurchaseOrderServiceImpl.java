@@ -1,7 +1,9 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
 import com.mercadolibre.projetointegrador.dtos.NewPurchaseOrderDTO;
+import com.mercadolibre.projetointegrador.dtos.ProductDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
+import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Buyer;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.model.PurchaseOrder;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,7 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
     private final PurchaseOrderRepository repository;
     private final BuyerServiceImpl buyerService;
     private final ProductServiceImpl productService;
+    private final BatchServiceImpl batchService;
     
     public List<Product> getProducts(Long id) {
         PurchaseOrder purchaseOrder = findById(id);
@@ -30,6 +34,13 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
 
     public double insertAndCalculatePurchaseOrder(NewPurchaseOrderDTO purchaseOrderDTO) {
         PurchaseOrder purchaseOrder = buildPurchaseOrder(purchaseOrderDTO);
+        List<Batch> batches = new ArrayList<>();
+        for (ProductDTO p : purchaseOrderDTO.getPurchaseOrder().getProducts()) {
+            Batch batch = batchService.findBatchContainingValidProduct(p.getProductId(), p.getQuantity());
+            batchService.updateCurrentQuantity(batch, p.getQuantity());
+            batches.add(batch);
+        }
+        batchService.saveAll(batches);
         repository.save(purchaseOrder);
         return calculateTotalOrderValue(purchaseOrderDTO);
     }
