@@ -1,6 +1,5 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
-import com.mercadolibre.projetointegrador.dtos.NewPurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.dtos.ProductDTO;
 import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
@@ -27,13 +26,13 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
     
     public List<Product> getProducts(Long id) {
         PurchaseOrder purchaseOrder = findById(id);
-        return purchaseOrder.getProducts();
+        return purchaseOrder.getProducts().stream().map(PurchaseProduct::getProduct).collect(Collectors.toList());
     }
 
-    public double insertAndCalculatePurchaseOrder(NewPurchaseOrderDTO purchaseOrderDTO) {
+    public double insertAndCalculatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) {
         PurchaseOrder purchaseOrder = buildPurchaseOrder(purchaseOrderDTO);
         List<Batch> batches = new ArrayList<>();
-        for (ProductDTO p : purchaseOrderDTO.getPurchaseOrder().getProducts()) {
+        for (ProductDTO p : purchaseOrderDTO.getProducts()) {
             Batch batch = batchService.findBatchContainingValidProduct(p.getProductId(), p.getQuantity());
             batchService.updateCurrentQuantity(batch, p.getQuantity());
             batches.add(batch);
@@ -41,48 +40,6 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
         batchService.saveAll(batches);
         repository.save(purchaseOrder);
         return calculateTotalOrderValue(purchaseOrderDTO);
-    }
-
-    private PurchaseOrder buildPurchaseOrder(NewPurchaseOrderDTO newPurchaseOrderDTO) {
-        Buyer buyer = buyerService.findById(newPurchaseOrderDTO.getPurchaseOrder().getId());
-        List<Product> products = newPurchaseOrderDTO.getPurchaseOrder().getProducts().stream()
-                .map(product -> productService.findById(product.getProductId()))
-                .collect(Collectors.toList());
-
-        return PurchaseOrder.builder()
-                .id(newPurchaseOrderDTO.getPurchaseOrder().getId())
-                .products(products)
-                .buyer(buyer)
-                .build();
-    }
-    private double calculateTotalOrderValue(NewPurchaseOrderDTO newPurchaseOrderDTO) {
-        return newPurchaseOrderDTO.getPurchaseOrder().getProducts().stream()
-                .mapToDouble(product -> productService.findById(product.getProductId()).getPrice() * product.getQuantity()).sum();
-    }
-
-    @Override
-    public PurchaseOrder create(PurchaseOrder purchaseOrder) {
-        return repository.save(purchaseOrder);
-    }
-
-    @Override
-    public PurchaseOrder update(PurchaseOrder purchaseOrder) {
-        return null;
-    }
-
-    @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
-    public PurchaseOrder findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("Order with id " + id));
-    }
-
-    @Override
-    public List<PurchaseOrder> findAll() {
-        return null;
     }
 
     public Set<Product> getSectorProducts(String category) {
@@ -103,8 +60,64 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
         return productSet;
     }
 
-    public PurchaseOrder updatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, Long id) {
+    public double updatePurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, Long id) {
         PurchaseOrder purchaseOrder = repository.findById(id).orElseThrow(() -> new NotFoundException("No Purchase Order with id "+id));
+        List<PurchaseProduct> purchaseProducts = purchaseOrder.getProducts();
+
+        for(PurchaseProduct p : purchaseProducts){
+            Batch matchingBatch = batchService.findMatchingBatch(p.getProduct());
+            batchService.returnProducts(matchingBatch, p.getQuantity());
+            batchService.save(matchingBatch);
+        }
+
+        purchaseOrderDTO.setId(id);
+
+        return insertAndCalculatePurchaseOrder(purchaseOrderDTO);
+    }
+
+    private PurchaseOrder buildPurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) {
+        Buyer buyer = buyerService.findById(purchaseOrderDTO.getBuyerId());
+
+        PurchaseOrder purchaseOrder = PurchaseOrder.builder()
+                .id(purchaseOrderDTO.getId())
+                .buyer(buyer)
+                .build();
+
+        List<PurchaseProduct> products = purchaseOrderDTO.getProducts().stream()
+                .map(
+                        product -> new PurchaseProduct(null, purchaseOrder, productService.findById(product.getProductId()), product.getQuantity())
+                ).collect(Collectors.toList());
+
+        purchaseOrder.setProducts(products);
+
+        return purchaseOrder;
+    }
+    private double calculateTotalOrderValue(PurchaseOrderDTO purchaseOrderDTO) {
+        return purchaseOrderDTO.getProducts().stream()
+                .mapToDouble(product -> productService.findById(product.getProductId()).getPrice() * product.getQuantity()).sum();
+    }
+
+    @Override
+    public PurchaseOrder create(PurchaseOrder purchaseOrder) {
+        return repository.save(purchaseOrder);
+    }
+
+    @Override
+    public PurchaseOrder update(PurchaseOrder purchaseOrder) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+    }
+
+    @Override
+    public PurchaseOrder findById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Order with id " + id));
+    }
+
+    @Override
+    public List<PurchaseOrder> findAll() {
         return null;
     }
 }

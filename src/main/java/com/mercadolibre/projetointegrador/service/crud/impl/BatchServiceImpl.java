@@ -6,6 +6,7 @@ import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Product;
+import com.mercadolibre.projetointegrador.model.PurchaseProduct;
 import com.mercadolibre.projetointegrador.repository.BatchRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,8 @@ public class BatchServiceImpl implements ICRUD<Batch> {
         batchRepository.saveAll(batchList);
     }
 
+    public void save(Batch batch){batchRepository.save(batch);}
+
     @Override
     public List<Batch> findAll() {
         return null;
@@ -96,7 +99,18 @@ public class BatchServiceImpl implements ICRUD<Batch> {
                 .orElseThrow(() -> new NotFoundException("Insufficient or non-existent units of product with id " + id + " in stock."));
     }
 
+    public Batch findMatchingBatch(Product product){
+        return batchRepository.findAll().stream()
+                .filter(batch -> batch.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Non existent batch with products of id " + product.getId()));
+    }
+
     public void updateCurrentQuantity (Batch batch, int quantity){
         batch.setCurrentQuantity(batch.getCurrentQuantity() - quantity);
+    }
+
+    public void returnProducts(Batch batch, int quantity){
+        batch.setCurrentQuantity(batch.getCurrentQuantity() + quantity);
     }
 }

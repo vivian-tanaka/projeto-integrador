@@ -19,13 +19,14 @@ import java.util.List;
 @Data
 public class PurchaseOrderDTO {
 
+    private Long id;
+
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate date;
 
     @JsonProperty("buyerId")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long id;
+    private Long buyerId;
 
     private OrderStatusDTO orderStatus;
     private List<ProductDTO> products;

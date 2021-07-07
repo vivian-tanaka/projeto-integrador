@@ -1,12 +1,8 @@
 package com.mercadolibre.projetointegrador.controller;
 
-import com.mercadolibre.projetointegrador.dtos.BatchDTO;
-import com.mercadolibre.projetointegrador.dtos.NewPurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.model.PurchaseOrder;
-import com.mercadolibre.projetointegrador.service.crud.impl.BatchServiceImpl;
-import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
 import com.mercadolibre.projetointegrador.service.crud.impl.PurchaseOrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +27,7 @@ public class PurchaseOrderController {
 
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    public double insertPurchaseOder(@Valid @RequestBody NewPurchaseOrderDTO purchaseOrderDTO){
+    public double insertPurchaseOder(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO){
         return purchaseOrderService.insertAndCalculatePurchaseOrder(purchaseOrderDTO);
     }
 
@@ -43,7 +39,7 @@ public class PurchaseOrderController {
 
     @PutMapping("/orders/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public PurchaseOrder updatePurchaseOder(
+    public double updatePurchaseOder(
             @Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
             @PathVariable Long id){
         return purchaseOrderService.updatePurchaseOrder(purchaseOrderDTO, id);
