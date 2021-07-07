@@ -97,10 +97,7 @@ public class InboundOrderServiceImpl implements ICRUD<InboundOrder> {
         return inboundOrder;
     }
 
-    private List<InboundOrder> findAllByWarehouseAndProductId(Warehouse warehouse, Long id){
-
-
-
-        return null;
+    public List<InboundOrder> findAllByWarehouse(Warehouse warehouse){
+        return inboundOrderRepository.findAllBySection_Warehouse_Id(warehouse.getId());
     }
 }

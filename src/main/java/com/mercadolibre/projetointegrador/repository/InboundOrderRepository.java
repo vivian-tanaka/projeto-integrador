@@ -11,11 +11,10 @@ import java.util.List;
 @Repository
 public interface InboundOrderRepository extends JpaRepository<InboundOrder, Long> {
 
-    @Query("SELECT inboundOrder " +
-            "FROM InboundOrder inboundOrder " +
-            "INNER JOIN Section section " +
-            "ON section.warehouse.id = :warehouseId " +
-            "AND inboundOrder.section.id = section.id " +
-            "AND inboundOrder.batchStock")
-    List<InboundOrder> findAllByWarehouseAndProductId(Long warehouseId, Long productId);
+//    @Query("SELECT inboundOrder " +
+//            "FROM InboundOrder inboundOrder " +
+//            "INNER JOIN Section section " +
+//            "ON section.warehouse.id = :warehouseId " +
+//            "AND inboundOrder.section.id = section.id")
+    List<InboundOrder> findAllBySection_Warehouse_Id(Long warehouseId);
 }

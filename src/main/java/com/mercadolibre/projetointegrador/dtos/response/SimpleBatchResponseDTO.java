@@ -1,12 +1,16 @@
 package com.mercadolibre.projetointegrador.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mercadolibre.projetointegrador.model.Section;
 import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class SimpleBatchResponseDTO {
 
@@ -15,5 +19,9 @@ public class SimpleBatchResponseDTO {
 
     private int currentQuantity;
 
-    private LocalDate dueDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private String dueDate;
+
+    @JsonIgnore
+    private Section section;
 }

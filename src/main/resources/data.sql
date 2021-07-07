@@ -15,7 +15,7 @@
 -- #DROP TABLE IF EXISTS inbound_order;
 -- #DROP TABLE IF EXISTS batch_item;
 
-create schema g3projdb
+-- create schema g3projdb;
 
 USE g3projdb;
 

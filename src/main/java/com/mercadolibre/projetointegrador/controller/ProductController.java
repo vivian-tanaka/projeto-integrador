@@ -74,7 +74,7 @@ public class ProductController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductSectionResponseDTO> findSectionsByProductId(
-            @RequestParam(value = "product-id", required = true) Integer id,
+            @RequestParam(value = "product-id", required = true) Long id,
             @RequestParam(value = "order-by", required = false, defaultValue = "") String orderBy,
             @RequestHeader("Authorization") String token){
         return productService.findSectionByProductId(id,orderBy, SessionServiceImpl.getUsername(token));
