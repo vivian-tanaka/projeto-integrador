@@ -15,7 +15,11 @@
 -- #DROP TABLE IF EXISTS inbound_order;
 -- #DROP TABLE IF EXISTS batch_item;
 
+create schema g3projdb
+
 USE g3projdb;
+
+
 SET sql_safe_updates = 0;
 
 -- # US01 - Initial values

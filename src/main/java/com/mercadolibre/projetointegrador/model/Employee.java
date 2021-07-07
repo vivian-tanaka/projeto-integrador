@@ -1,5 +1,6 @@
 package com.mercadolibre.projetointegrador.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,9 @@ public class Employee implements Serializable, UserDetails {
     private String name;
 
 //    @Column(unique = true)
+    @JsonIgnore
     private String username;
+    @JsonIgnore
     private String password;
 
 //    @Column(unique = true)
