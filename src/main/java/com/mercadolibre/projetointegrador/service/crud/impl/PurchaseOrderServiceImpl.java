@@ -23,7 +23,7 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
     private final BuyerServiceImpl buyerService;
     private final ProductServiceImpl productService;
     private final BatchServiceImpl batchService;
-    private final SectionServiceImpl sectionService;
+    private final InboundOrderServiceImpl inboundOrderService;
     
     public List<Product> getProducts(Long id) {
         PurchaseOrder purchaseOrder = findById(id);
@@ -86,10 +86,16 @@ public class PurchaseOrderServiceImpl implements ICRUD<PurchaseOrder> {
     }
 
     public Set<Product> getSectorProducts(String category) {
-        List<Section> sections = sectionService.findSectionsBySectionCode(category);
+        List<InboundOrder> filteredInboundOrders = inboundOrderService.findAll()
+                .stream().filter(inboundOrder -> inboundOrder.getSection()
+                        .getSectionCode().equals(category)).collect(Collectors.toList());
+
         Set<Product> productSet = new LinkedHashSet<>();
-        for(Section s : sections){
-            productSet.addAll(s.getProducts());
+
+        for(InboundOrder io : filteredInboundOrders){
+            for(Batch batch : io.getBatchStock()){
+                productSet.add(batch.getProduct());
+            }
         }
         if(productSet.isEmpty()){
             throw new NotFoundException("No products found in the section with cod " +category);

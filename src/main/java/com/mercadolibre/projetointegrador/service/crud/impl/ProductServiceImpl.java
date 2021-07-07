@@ -30,12 +30,8 @@ public class ProductServiceImpl implements ICRUD<Product> {
                 .rating(productDTO.getRating())
                 .price(productDTO.getPrice())
                 .build();
-
         product.setSeller(sellerRepository.findById(productDTO.getSeller_id())
                 .orElseThrow(() -> new NotFoundException("No existing seller with id "+productDTO.getSeller_id())));
-        product.setSection(sectionRepository.findSectionsBySectionCode(productDTO.getSection_code()).stream()
-                .findFirst().orElseThrow(() -> new NotFoundException("No existing section with code " + productDTO.getSection_code())));
-
         return productRepository.save(product);
     }
 

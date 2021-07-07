@@ -28,9 +28,6 @@ public class Section {
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
 
-    @OneToMany(mappedBy = "section")
-    private List<Product> products;
-
     private double minTemperature;
     private double maxTemperature;
 
