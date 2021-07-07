@@ -31,11 +31,11 @@ public class PurchaseOrderController {
     public double insertPurchaseOder(@Valid @RequestBody NewPurchaseOrderDTO purchaseOrderDTO){
         return purchaseOrderService.insertAndCalculatePurchaseOrder(purchaseOrderDTO);
     }
-/*
+
     //test request
     @GetMapping("{id}/{quantity}")
     @ResponseStatus(HttpStatus.OK)
     public BatchDTO getValidBatch(@PathVariable Long id, @PathVariable int quantity){
         return batchService.map(batchService.findBatchContainingValidProduct(id, quantity));
-    }*/
+    }
 }
