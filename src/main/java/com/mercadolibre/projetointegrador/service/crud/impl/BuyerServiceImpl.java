@@ -17,26 +17,33 @@ public class BuyerServiceImpl implements ICRUD<Buyer> {
 
     @Override
     public Buyer create(Buyer buyer) {
-        return null;
+        return repository.save(buyer);
     }
 
     @Override
     public Buyer update(Buyer buyer) {
-        return null;
+        repository.findById(buyer.getId());
+        return repository.save(buyer);
     }
 
     @Override
     public void delete(Long id) {
-
+        repository.findById(id);
+        repository.deleteById(id);
     }
 
     @Override
     public Buyer findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("Buyer with id " + id + " not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Buyer with id " + id + " not found"));
     }
 
     @Override
     public List<Buyer> findAll() {
-        return null;
+        return repository.findAll();
+    }
+
+    public Buyer findByName(String name){
+        return repository.findByName(name);
     }
 }
