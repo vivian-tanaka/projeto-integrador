@@ -31,6 +31,10 @@ public class EmployeeServiceImplTest {
     }
 
     private Employee mockEmployee() {
-        return new Employee(1L, "Random Employee", "randomemployee", "123321", "randomemployee@meli.com", null, null);
+        Employee employee = new Employee();
+        employee.setName("Random Employee");
+        employee.setUsername("randomemployee");
+        employee.setPassword("123321");
+        return employee;
     }
 }

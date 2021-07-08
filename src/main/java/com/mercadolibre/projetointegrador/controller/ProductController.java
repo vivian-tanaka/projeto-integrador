@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 import static com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl.getUsername;
 
@@ -22,14 +23,6 @@ import static com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl
 public class ProductController {
 
     private final ProductServiceImpl productService;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Product create(
-            //TODO validate seller
-            @Valid @RequestBody NewProductDTO productDTO){
-        return productService.create(productDTO);
-    }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -73,7 +66,7 @@ public class ProductController {
     }
 
     //TODO Usar paginação ao invés de fazer a ordenação na mão
-    @GetMapping("/list")
+    @GetMapping("/section")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductSectionResponseDTO> findSectionsByProductId(
             @RequestParam(value = "product-id", required = true) Long id,
