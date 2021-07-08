@@ -1,6 +1,7 @@
 package com.mercadolibre.projetointegrador.controller;
 
 
+
 import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
@@ -17,7 +18,7 @@ import static com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/fresh-products/")
+@RequestMapping("/api/v1/fresh-products")
 public class ProductController {
 
     private final ProductServiceImpl productService;
@@ -26,8 +27,8 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public Product create(
             //TODO validate seller
-            @Valid @RequestBody Product product){
-        return productService.create(product);
+            @Valid @RequestBody NewProductDTO productDTO){
+        return productService.create(productDTO);
     }
 
     @PutMapping("/{id}")

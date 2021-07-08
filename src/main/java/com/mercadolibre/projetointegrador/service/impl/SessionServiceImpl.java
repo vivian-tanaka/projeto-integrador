@@ -1,10 +1,10 @@
 package com.mercadolibre.projetointegrador.service.impl;
 
-import com.mercadolibre.projetointegrador.dtos.response.EmployeeResponseDTO;
+import com.mercadolibre.projetointegrador.dtos.response.UserResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.ApiException;
-import com.mercadolibre.projetointegrador.model.Employee;
+import com.mercadolibre.projetointegrador.model.User;
 import com.mercadolibre.projetointegrador.service.ISessionService;
-import com.mercadolibre.projetointegrador.service.crud.impl.EmployeeServiceImpl;
+import com.mercadolibre.projetointegrador.service.crud.impl.UserServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class SessionServiceImpl implements ISessionService {
-    private final EmployeeServiceImpl employeeService;
+    private final UserServiceImpl userService;
 
     /**
      * Realiza la validación del usuario y contraseña ingresado.
@@ -31,32 +31,32 @@ public class SessionServiceImpl implements ISessionService {
      * @throws NotFoundException
      */
     @Override
-    public EmployeeResponseDTO login(String username, String password) throws ApiException {
+    public UserResponseDTO login(String username, String password) throws ApiException {
         //Voy a la base de datos y reviso que el usuario y contraseña existan.
 
-        Employee employee = employeeService.findByUsernameAndPassword(username,password);
+        User user = userService.findByUsernameAndPassword(username,password);
 
-        String token = getJWTToken(employee);
-        EmployeeResponseDTO user = new EmployeeResponseDTO();
-        user.setUsername(username);
-        user.setToken(token);
-        return user;
+        String token = getJWTToken(user);
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setUsername(username);
+        userResponseDTO.setToken(token);
+        return userResponseDTO;
     }
 
     /**
      * Genera un token para un usuario específico, válido por 10'
-     * @param employee
+     * @param user
      * @return
      */
-    private String getJWTToken(Employee employee) {
+    private String getJWTToken(User user) {
         String secretKey = "mySecretKey";
 
         String token = Jwts
                 .builder()
                 .setId("softtekJWT")
-                .setSubject(employee.getUsername())
+                .setSubject(user.getUsername())
                 .claim("authorities",
-                        employee.getAuthorities().stream()
+                        user.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))

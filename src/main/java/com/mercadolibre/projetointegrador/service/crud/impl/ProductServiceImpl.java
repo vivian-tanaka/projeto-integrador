@@ -1,5 +1,6 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
+
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
 import com.mercadolibre.projetointegrador.dtos.SectionDTO;
 import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
@@ -8,11 +9,13 @@ import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.*;
 import com.mercadolibre.projetointegrador.repository.InboundOrderRepository;
 import com.mercadolibre.projetointegrador.repository.ProductRepository;
+import com.mercadolibre.projetointegrador.repository.SectionRepository;
 import com.mercadolibre.projetointegrador.repository.SellerRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,13 +27,15 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
+
     private final EmployeeServiceImpl employeeService;
     private final InboundOrderRepository inboundRepository;
     private final ModelMapper modelMapper;
 
+
     @Override
     public Product create(Product product) {
-        return productRepository.save(product);
+        return null;
     }
 
     @Override

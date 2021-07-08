@@ -6,6 +6,7 @@ import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
 import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Product;
+import com.mercadolibre.projetointegrador.model.PurchaseProduct;
 import com.mercadolibre.projetointegrador.repository.BatchRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
@@ -25,37 +26,6 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     private final ModelMapper modelMapper;
     private final ProductServiceImpl productService;
     private final BatchRepository batchRepository;
-
-    @Override
-    public Batch create(Batch batch) {
-        return batchRepository.save(batch);
-    }
-
-    @Override
-    public Batch update(Batch batch) {
-        Batch foundBatch = findById(batch.getId());
-        batch.setId(foundBatch.getId());
-        return create(batch);
-    }
-
-    @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
-    public Batch findById(Long id) {
-        return batchRepository.findById(id).orElseThrow(() -> new NotFoundException("Batch with id " + id + " not found"));
-    }
-
-    public void saveAll(List<Batch> batchList){
-        batchRepository.saveAll(batchList);
-    }
-
-    @Override
-    public List<Batch> findAll() {
-        return null;
-    }
 
     public List<Batch> create(List<BatchDTO> batchDTOS) {
 
@@ -96,7 +66,62 @@ public class BatchServiceImpl implements ICRUD<Batch> {
                 .orElseThrow(() -> new NotFoundException("Insufficient or non-existent units of product with id " + id + " in stock."));
     }
 
+    public Batch findMatchingBatch(Product product){
+        return batchRepository.findAll().stream()
+                .filter(batch -> batch.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Non existent batch with products of id " + product.getId()));
+    }
+
+    public void retrieveProductsFromBatches(PurchaseOrderDTO purchaseOrderDTO) {
+        List<Batch> batches = new ArrayList<>();
+        for (ProductDTO p : purchaseOrderDTO.getProducts()) {
+            Batch batch = findBatchContainingValidProduct(p.getProductId(), p.getQuantity());
+            updateCurrentQuantity(batch, p.getQuantity());
+            batches.add(batch);
+        }
+        batchRepository.saveAll(batches);
+    }
+
+    public void removeCurrentProducts(List<PurchaseProduct> purchaseProducts) {
+        for(PurchaseProduct p : purchaseProducts){
+            Batch matchingBatch = findMatchingBatch(p.getProduct());
+            returnProducts(matchingBatch, p.getQuantity());
+            batchRepository.save(matchingBatch);
+        }
+    }
+
     public void updateCurrentQuantity (Batch batch, int quantity){
         batch.setCurrentQuantity(batch.getCurrentQuantity() - quantity);
+    }
+
+    public void returnProducts(Batch batch, int quantity){
+        batch.setCurrentQuantity(batch.getCurrentQuantity() + quantity);
+    }
+
+    @Override
+    public Batch create(Batch batch) {
+        return batchRepository.save(batch);
+    }
+
+    @Override
+    public Batch update(Batch batch) {
+        Batch foundBatch = findById(batch.getId());
+        batch.setId(foundBatch.getId());
+        return create(batch);
+    }
+
+    @Override
+    public void delete(Long id) {
+    }
+
+    @Override
+    public Batch findById(Long id) {
+        return batchRepository.findById(id).orElseThrow(() -> new NotFoundException("Batch with id " + id + " not found"));
+    }
+
+    @Override
+    public List<Batch> findAll() {
+        return null;
     }
 }

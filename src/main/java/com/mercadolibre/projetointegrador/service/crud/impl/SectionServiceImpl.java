@@ -2,6 +2,7 @@ package com.mercadolibre.projetointegrador.service.crud.impl;
 
 import com.mercadolibre.projetointegrador.dtos.SectionDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
+import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.model.Section;
 import com.mercadolibre.projetointegrador.repository.SectionRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
@@ -22,6 +23,10 @@ public class SectionServiceImpl implements ICRUD<Section> {
                 sectionDTO.getWarehouseCode())
                 .orElseThrow(() -> new NotFoundException(
                         "Seção de id: " + sectionDTO.getId() + " e/ou Warehouse " + sectionDTO.getWarehouseCode() + " não encontrado"));
+    }
+
+    public List<Section> findSectionsBySectionCode(String sectionCode){
+        return sectionRepository.findSectionsBySectionCode(sectionCode);
     }
 
     @Override
