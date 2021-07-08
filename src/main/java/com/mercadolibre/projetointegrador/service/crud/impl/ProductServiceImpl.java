@@ -79,7 +79,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
     public WarehouseStockResponseDTO findProductstockInWarehouses(Long productId) {
         List<InboundOrder> filteredInboundOrder = getInboundOrderByProduct(findById(productId), inboundRepository.findAll());
 
-        List<WarehouseStockDTO> stock = getWarehouseStockDTO(filteredInboundOrder);
+        List<WarehouseStockDTO> stock = getWarehouseStockDTO(filteredInboundOrder, productId);
 
         return WarehouseStockResponseDTO
                 .builder()
@@ -88,12 +88,15 @@ public class ProductServiceImpl implements ICRUD<Product> {
                 .build();
     }
 
-    private List<WarehouseStockDTO> getWarehouseStockDTO(List<InboundOrder> filteredInboundOrder) {
+    private List<WarehouseStockDTO> getWarehouseStockDTO(List<InboundOrder> filteredInboundOrder, Long productId) {
         return filteredInboundOrder
                 .stream()
                 .map(inboundOrder -> new WarehouseStockDTO(
                         inboundOrder.getSection().getWarehouse().getId(),
-                        inboundOrder.getBatchStock()))
+                        inboundOrder.getBatchStock()
+                                .stream()
+                                .filter(batch -> batch.getProduct().getId().equals(productId))
+                                .collect(Collectors.toList())))
                 .collect(Collectors.groupingBy(WarehouseStockDTO::getWarehouseCode))
                 .values()
                 .stream()
