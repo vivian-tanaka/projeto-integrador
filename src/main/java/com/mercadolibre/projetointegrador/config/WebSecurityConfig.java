@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/v1/fresh-products/inboundorder").hasAnyAuthority("ROLE_SUPERVISOR", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/v1/fresh-products/orders").hasAnyAuthority("ROLE_BUYER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/fresh-products/orders").hasAnyAuthority("ROLE_BUYER", "ROLE_ADMIN")
-
+                .antMatchers(HttpMethod.GET, "/api/v1/fresh-products/section").hasAnyAuthority("ROLE_SUPERVISOR", "ROLE_ADMIN")
                 .anyRequest().authenticated();
     }
 }

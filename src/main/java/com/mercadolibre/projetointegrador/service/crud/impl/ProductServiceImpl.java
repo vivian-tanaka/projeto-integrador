@@ -1,9 +1,12 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
-import com.mercadolibre.projetointegrador.dtos.NewProductDTO;
+import com.mercadolibre.projetointegrador.dtos.BatchDTO;
+import com.mercadolibre.projetointegrador.dtos.SectionDTO;
+import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
+import com.mercadolibre.projetointegrador.dtos.response.SimpleBatchResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
-import com.mercadolibre.projetointegrador.model.Product;
-import com.mercadolibre.projetointegrador.model.Seller;
+import com.mercadolibre.projetointegrador.model.*;
+import com.mercadolibre.projetointegrador.repository.InboundOrderRepository;
 import com.mercadolibre.projetointegrador.repository.ProductRepository;
 import com.mercadolibre.projetointegrador.repository.SectionRepository;
 import com.mercadolibre.projetointegrador.repository.SellerRepository;
@@ -12,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -21,19 +26,9 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
-    private final SectionRepository sectionRepository;
-
-    public Product create(NewProductDTO productDTO) {
-        Product product = Product.builder()
-                .name(productDTO.getName())
-                .description(productDTO.getDescription())
-                .rating(productDTO.getRating())
-                .price(productDTO.getPrice())
-                .build();
-        product.setSeller(sellerRepository.findById(productDTO.getSeller_id())
-                .orElseThrow(() -> new NotFoundException("No existing seller with id "+productDTO.getSeller_id())));
-        return productRepository.save(product);
-    }
+    private final EmployeeServiceImpl employeeService;
+    private final InboundOrderRepository inboundRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Product create(Product product) {
@@ -63,12 +58,95 @@ public class ProductServiceImpl implements ICRUD<Product> {
         return productRepository.findAll();
     }
 
-    public List<Product> findAllBySellerName(String name){
+    public List<Product> findAllBySellerName(String name) {
         return productRepository.findAllBySeller(sellerRepository.findSellerByName(name));
     }
 
-    public Product findByName(String name){
+    public Product findByName(String name) {
         return productRepository.findByName(name);
     }
 
+    public List<ProductSectionResponseDTO> findSectionByProductId(Long productId, String orderBy, String username) {
+        Warehouse warehouse = employeeService.findByUsername(username).getWarehouse();
+        Map<Section, List<Batch>> sectionBatches = findBatchsGroupBySection(findById(productId), warehouse);
+
+        List<ProductSectionResponseDTO> responseDTO = buildProductSectionResponse(sectionBatches, productId, orderBy);
+
+        return responseDTO;
+    }
+
+    private Map<Section, List<Batch>> findBatchsGroupBySection(Product product, Warehouse warehouse) {
+        List<InboundOrder> inboundOrders = inboundRepository.findAllBySection_Warehouse_Id(warehouse.getId());
+
+        Map<Section, List<Batch>> resultMap = new HashMap<>();
+        List<InboundOrder> filteredInboundOrder = getInboundOrderByProduct(product, inboundOrders);
+
+        for (InboundOrder element : filteredInboundOrder) {
+            List<Batch> batchStock = getBatchStreamByProduct(product, element).sorted(Comparator.comparing(Batch::getDueDate)).collect(Collectors.toList());
+
+            if (!batchStock.isEmpty() && resultMap.containsKey(element.getSection())) {
+                resultMap.get(element.getSection()).addAll(batchStock);
+            } else if (!batchStock.isEmpty()) {
+                resultMap.put(element.getSection(), batchStock);
+            }
+        }
+
+        return resultMap;
+    }
+
+    private List<InboundOrder> getInboundOrderByProduct(Product product, List<InboundOrder> inboundOrders) {
+        List<InboundOrder> filteredInboundOrder = inboundOrders
+                .stream()
+                .filter(inboundOrder -> getBatchStreamByProduct(product, inboundOrder).findAny().isPresent())
+                .collect(Collectors.toList());
+
+        if(filteredInboundOrder.isEmpty()) throw new NotFoundException("Nenhum batch do produto cadastrado nesse warehouse!");
+
+        return filteredInboundOrder;
+    }
+
+    private Stream<Batch> getBatchStreamByProduct(Product product, InboundOrder inboundOrder) {
+        return inboundOrder.getBatchStock()
+                .stream()
+                .filter(batch -> batch.getProduct().getId().equals(product.getId()));
+    }
+
+    private List<ProductSectionResponseDTO> buildProductSectionResponse(Map<Section, List<Batch>> sectionBatches, Long productId,String orderBy) {
+        List<ProductSectionResponseDTO> builtResponse = new ArrayList<>();
+        Comparator<SimpleBatchResponseDTO> sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getId);
+
+        if(!orderBy.isEmpty()){
+            switch(orderBy){
+                case "C":
+                    sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getCurrentQuantity);
+                    break;
+                case "F":
+                    Comparator.comparing(SimpleBatchResponseDTO::getDueDate);
+                    break;
+            }
+        }
+
+        for (Map.Entry<Section, List<Batch>> entry : sectionBatches.entrySet()) {
+            SectionDTO sectionDTO = SectionDTO.builder()
+                    .id(String.valueOf(entry.getKey().getId()))
+                    .warehouseCode(entry.getKey().getWarehouse().getId())
+                    .build();
+
+            ProductSectionResponseDTO responseDTO =
+                    ProductSectionResponseDTO
+                            .builder()
+                            .productId(productId)
+                            .section(sectionDTO)
+                            .batchStock(entry.getValue()
+                                    .stream()
+                                    .map(batch -> modelMapper.map(batch, SimpleBatchResponseDTO.class))
+                                    .sorted(sortingComparator)
+                                    .collect(Collectors.toList()))
+                            .build();
+
+            builtResponse.add(responseDTO);
+        }
+
+        return builtResponse;
+    }
 }

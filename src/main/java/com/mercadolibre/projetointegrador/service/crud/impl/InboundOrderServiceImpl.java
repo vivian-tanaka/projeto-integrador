@@ -8,6 +8,7 @@ import com.mercadolibre.projetointegrador.mapper.BatchMapper;
 import com.mercadolibre.projetointegrador.model.InboundOrder;
 import com.mercadolibre.projetointegrador.model.Section;
 import com.mercadolibre.projetointegrador.model.Supervisor;
+import com.mercadolibre.projetointegrador.model.Warehouse;
 import com.mercadolibre.projetointegrador.repository.InboundOrderRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
@@ -94,5 +95,9 @@ public class InboundOrderServiceImpl implements ICRUD<InboundOrder> {
                 .build();
 
         return inboundOrder;
+    }
+
+    public List<InboundOrder> findAllByWarehouse(Warehouse warehouse){
+        return inboundOrderRepository.findAllBySection_Warehouse_Id(warehouse.getId());
     }
 }
