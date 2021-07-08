@@ -1,9 +1,11 @@
 package com.mercadolibre.projetointegrador.controller;
 
 
-import com.mercadolibre.projetointegrador.dtos.NewProductDTO;
+
+import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
+import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.parameters.P;
@@ -68,6 +70,16 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAllBySellerName(@PathVariable String name){
         return productService.findAllBySellerName(name);
+    }
+
+    //TODO Usar paginação ao invés de fazer a ordenação na mão
+    @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductSectionResponseDTO> findSectionsByProductId(
+            @RequestParam(value = "product-id", required = true) Long id,
+            @RequestParam(value = "order-by", required = false, defaultValue = "") String orderBy,
+            @RequestHeader("Authorization") String token){
+        return productService.findSectionByProductId(id,orderBy, SessionServiceImpl.getUsername(token));
     }
 
     //TODO find by warehouse?

@@ -2,7 +2,6 @@ INSERT INTO `role` (`id`, `role_name`)
 SELECT * FROM (SELECT NULL, 'ROLE_SUPERVISOR') AS tmp
 WHERE NOT EXISTS (SELECT role_name FROM role WHERE role_name = 'ROLE_SUPERVISOR') LIMIT 1;
 
-
 INSERT INTO `role` (`id`, `role_name`)
 SELECT * FROM (SELECT NULL, 'ROLE_BUYER') AS tmp
 WHERE NOT EXISTS (SELECT role_name FROM role WHERE role_name = 'ROLE_BUYER') LIMIT 1;
