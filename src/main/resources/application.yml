@@ -28,5 +28,5 @@ springdoc:
 
 app:
   title: projetointegrador
-  description: @project.description@
-  version: @project.version@
+  description: Projeto integrador desenvolvido como desafio final do bootcamp de aceleração
+  version: 1.0.0
