@@ -5,6 +5,10 @@ import com.mercadolibre.projetointegrador.dtos.response.WarehouseStockResponseDT
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
 import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +26,6 @@ public class ProductController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Product update(
-            //TODO validate seller or supervisor
             @Valid @RequestBody Product product){
         return productService.update(product);
     }
@@ -30,12 +33,14 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public String delete(
-            //TODO validate seller or supervisor
             @Valid @PathVariable Long id){
         productService.delete(id);
         return "Product of Id " + id + " deleted.";
     }
 
+    @Operation(summary = "US02 - Get all Products", responses = {
+            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product   .class))),
+    })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAllProducts(){

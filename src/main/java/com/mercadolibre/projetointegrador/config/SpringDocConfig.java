@@ -20,11 +20,12 @@ public class SpringDocConfig {
 		OpenAPI api = new OpenAPI().info(new Info().title(appName)
 				.version(version)
 				.description(description)
-				.contact(new Contact().name("dambetan01")
-						.email("ext_dambetan@mercadolibre.com")));
+				.contact(new Contact().name("Grupo 3")
+						.url("https://github.com/BootcampMeli")));
 
 		api.addServersItem(new Server().url(isLocalScope() ? "http://localhost:8080" : format("https://%s_%s.furyapps.io", SCOPE_VALUE, appName))
 				.description(format("Scope %s", SCOPE_VALUE)));
 		return api;
 	}
+
 }
