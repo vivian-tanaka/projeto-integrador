@@ -3,19 +3,16 @@ package com.mercadolibre.projetointegrador.controller;
 
 
 import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
+import com.mercadolibre.projetointegrador.dtos.response.WarehouseStockResponseDTO;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
 import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
-
-import static com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl.getUsername;
 
 @RequiredArgsConstructor
 @RestController
@@ -73,6 +70,13 @@ public class ProductController {
             @RequestParam(value = "order-by", required = false, defaultValue = "") String orderBy,
             @RequestHeader("Authorization") String token){
         return productService.findSectionByProductId(id,orderBy, SessionServiceImpl.getUsername(token));
+    }
+
+    @GetMapping("/warehouse")
+    @ResponseStatus(HttpStatus.OK)
+    public WarehouseStockResponseDTO findProductstockInWarehouse(
+            @RequestParam(value = "product-id", required = true) Long id){
+        return productService.findProductstockInWarehouse(id);
     }
 
     //TODO find by warehouse?
