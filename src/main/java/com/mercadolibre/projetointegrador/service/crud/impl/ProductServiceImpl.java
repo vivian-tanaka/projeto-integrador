@@ -171,6 +171,8 @@ public class ProductServiceImpl implements ICRUD<Product> {
                                 grouped.stream().map(WarehouseStockDTO::getBatchstock).flatMap(List::stream).collect(Collectors.toList())))
                         .collect(Collectors.toList());
 
+        if(stock.isEmpty()) throw new NotFoundException("Não há InboundOrder de produto id: "+productId);
+
         return WarehouseStockResponseDTO
                 .builder()
                 .productId(productId)
