@@ -137,4 +137,3 @@ INSERT INTO user_role VALUES(8, 2);
 INSERT INTO user_role VALUES(9, 2);
 INSERT INTO user_role VALUES(10, 2);
 INSERT INTO user_role VALUES(11, 2);
-

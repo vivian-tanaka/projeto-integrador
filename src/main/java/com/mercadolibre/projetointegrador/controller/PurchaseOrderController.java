@@ -1,6 +1,7 @@
 package com.mercadolibre.projetointegrador.controller;
 
 import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
+
 import com.mercadolibre.projetointegrador.dtos.response.InboundOrderResponseDTO;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.model.PurchaseOrder;
@@ -33,6 +34,7 @@ public class PurchaseOrderController {
         return purchaseOrderService.getProducts(id);
     }
 
+
     @Operation(summary = "US02 - Create Purchase Order", responses = {
             @ApiResponse(description = "Successful Operation", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Double.class))),
     })
@@ -45,11 +47,13 @@ public class PurchaseOrderController {
     @Operation(summary = "US02 - Get Products from Category", responses = {
             @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
     })
+
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public Set<Product> getProductsFromCategory(@RequestParam(value = "category", defaultValue = "FS") String category){
         return purchaseOrderService.getSectorProducts(category);
     }
+
 
     @Operation(summary = "US02 - Update Purchase Order", responses = {
             @ApiResponse(description = "Successful Operation", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Double.class))),
