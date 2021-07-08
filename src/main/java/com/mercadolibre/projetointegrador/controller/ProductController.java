@@ -1,7 +1,5 @@
 package com.mercadolibre.projetointegrador.controller;
 
-
-
 import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
 import com.mercadolibre.projetointegrador.dtos.response.WarehouseStockResponseDTO;
 import com.mercadolibre.projetointegrador.model.Product;
@@ -62,25 +60,19 @@ public class ProductController {
         return productService.findAllBySellerName(name);
     }
 
-    //TODO Usar paginação ao invés de fazer a ordenação na mão
     @GetMapping("/section")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductSectionResponseDTO> findSectionsByProductId(
-            @RequestParam(value = "product-id", required = true) Long id,
+            @RequestParam(value = "product-id") Long id,
             @RequestParam(value = "order-by", required = false, defaultValue = "") String orderBy,
             @RequestHeader("Authorization") String token){
-        return productService.findSectionByProductId(id,orderBy, SessionServiceImpl.getUsername(token));
+        return productService.findSectionStockByProductId(id,orderBy, SessionServiceImpl.getUsername(token));
     }
 
     @GetMapping("/warehouse")
     @ResponseStatus(HttpStatus.OK)
     public WarehouseStockResponseDTO findProductstockInWarehouse(
-            @RequestParam(value = "product-id", required = true) Long id){
-        return productService.findProductstockInWarehouse(id);
+            @RequestParam(value = "product-id") Long id){
+        return productService.findProductstockInWarehouses(id);
     }
-
-    //TODO find by warehouse?
-
-    //TODO find by category
-
 }

@@ -1,6 +1,5 @@
 package com.mercadolibre.projetointegrador.service.crud.impl;
 
-
 import com.mercadolibre.projetointegrador.dtos.SectionDTO;
 import com.mercadolibre.projetointegrador.dtos.WarehouseStockDTO;
 import com.mercadolibre.projetointegrador.dtos.response.ProductSectionResponseDTO;
@@ -31,7 +30,6 @@ public class ProductServiceImpl implements ICRUD<Product> {
     private final EmployeeServiceImpl employeeService;
 
     private final ModelMapper modelMapper;
-
 
     @Override
     public Product create(Product product) {
@@ -69,16 +67,47 @@ public class ProductServiceImpl implements ICRUD<Product> {
         return productRepository.findByName(name);
     }
 
-    public List<ProductSectionResponseDTO> findSectionByProductId(Long productId, String orderBy, String username) {
+    public List<ProductSectionResponseDTO> findSectionStockByProductId(Long productId, String orderBy, String username) {
         Warehouse warehouse = employeeService.findByUsername(username).getWarehouse();
-        Map<Section, List<Batch>> sectionBatches = findBatchsGroupBySection(findById(productId), warehouse);
+        Map<Section, List<Batch>> sectionBatches = findBatchStockGroupBySection(findById(productId), warehouse);
 
         List<ProductSectionResponseDTO> responseDTO = buildProductSectionResponse(sectionBatches, productId, orderBy);
 
         return responseDTO;
     }
 
-    private Map<Section, List<Batch>> findBatchsGroupBySection(Product product, Warehouse warehouse) {
+    public WarehouseStockResponseDTO findProductstockInWarehouses(Long productId) {
+        List<InboundOrder> filteredInboundOrder = getInboundOrderByProduct(findById(productId), inboundRepository.findAll());
+
+        List<WarehouseStockDTO> stock = getWarehouseStockDTO(filteredInboundOrder);
+
+        return WarehouseStockResponseDTO
+                .builder()
+                .productId(productId)
+                .warehouses(stock)
+                .build();
+    }
+
+    private List<WarehouseStockDTO> getWarehouseStockDTO(List<InboundOrder> filteredInboundOrder) {
+        return filteredInboundOrder
+                .stream()
+                .map(inboundOrder -> new WarehouseStockDTO(
+                        inboundOrder.getSection().getWarehouse().getId(),
+                        inboundOrder.getBatchStock()))
+                .collect(Collectors.groupingBy(WarehouseStockDTO::getWarehouseCode))
+                .values()
+                .stream()
+                .map(grouped -> new WarehouseStockDTO(
+                        grouped.get(0).getWarehouseCode(),
+                        grouped
+                                .stream()
+                                .map(WarehouseStockDTO::getBatchstock)
+                                .flatMap(List::stream)
+                                .collect(Collectors.toList())))
+                .collect(Collectors.toList());
+    }
+
+    private Map<Section, List<Batch>> findBatchStockGroupBySection(Product product, Warehouse warehouse) {
         List<InboundOrder> inboundOrders = inboundRepository.findAllBySection_Warehouse_Id(warehouse.getId());
 
         Map<Section, List<Batch>> resultMap = new HashMap<>();
@@ -104,7 +133,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
                 .collect(Collectors.toList());
 
         if (filteredInboundOrder.isEmpty())
-            throw new NotFoundException("Nenhum batch do produto cadastrado nesse warehouse!");
+            throw new NotFoundException("Nenhum batch do produto id: " + product.getId() + " cadastrado em warehouse!");
 
         return filteredInboundOrder;
     }
@@ -117,18 +146,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     private List<ProductSectionResponseDTO> buildProductSectionResponse(Map<Section, List<Batch>> sectionBatches, Long productId, String orderBy) {
         List<ProductSectionResponseDTO> builtResponse = new ArrayList<>();
-        Comparator<SimpleBatchResponseDTO> sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getId);
-
-        if (!orderBy.isEmpty()) {
-            switch (orderBy) {
-                case "C":
-                    sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getCurrentQuantity);
-                    break;
-                case "F":
-                    Comparator.comparing(SimpleBatchResponseDTO::getDueDate);
-                    break;
-            }
-        }
+        Comparator<SimpleBatchResponseDTO> sortingComparator = getSortingComparator(orderBy);
 
         for (Map.Entry<Section, List<Batch>> entry : sectionBatches.entrySet()) {
             SectionDTO sectionDTO = SectionDTO.builder()
@@ -154,29 +172,21 @@ public class ProductServiceImpl implements ICRUD<Product> {
         return builtResponse;
     }
 
-    public WarehouseStockResponseDTO findProductstockInWarehouse(Long productId) {
-        List<InboundOrder> filteredInboundOrder = getInboundOrderByProduct(findById(productId), inboundRepository.findAll());
+    private Comparator<SimpleBatchResponseDTO> getSortingComparator(String orderBy) {
+        Comparator<SimpleBatchResponseDTO> sortingComparator = null;
 
-        List<WarehouseStockDTO> stock =
-                filteredInboundOrder
-                        .stream()
-                        .map(inboundOrder -> new WarehouseStockDTO(
-                                inboundOrder.getSection().getWarehouse().getId(),
-                                inboundOrder.getBatchStock()))
-                        .collect(Collectors.groupingBy(WarehouseStockDTO::getWarehouseCode))
-                        .values()
-                        .stream()
-                        .map(grouped -> new WarehouseStockDTO(
-                                grouped.get(0).getWarehouseCode(),
-                                grouped.stream().map(WarehouseStockDTO::getBatchstock).flatMap(List::stream).collect(Collectors.toList())))
-                        .collect(Collectors.toList());
+        switch (orderBy) {
+            case "C":
+                sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getCurrentQuantity);
+                break;
+            case "F":
+                sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getDueDate);
+                break;
+            default:
+                sortingComparator = Comparator.comparing(SimpleBatchResponseDTO::getId);
+                break;
+        }
 
-        if(stock.isEmpty()) throw new NotFoundException("Não há InboundOrder de produto id: "+productId);
-
-        return WarehouseStockResponseDTO
-                .builder()
-                .productId(productId)
-                .warehouses(stock)
-                .build();
+        return sortingComparator;
     }
 }
