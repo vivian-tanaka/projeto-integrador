@@ -3,7 +3,9 @@ package com.mercadolibre.projetointegrador.service.crud.impl;
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
 import com.mercadolibre.projetointegrador.dtos.ProductDTO;
 import com.mercadolibre.projetointegrador.dtos.PurchaseOrderDTO;
+import com.mercadolibre.projetointegrador.dtos.response.BatchDueDateResponseDTO;
 import com.mercadolibre.projetointegrador.exceptions.NotFoundException;
+import com.mercadolibre.projetointegrador.mapper.BatchMapper;
 import com.mercadolibre.projetointegrador.model.Batch;
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.model.PurchaseProduct;
@@ -11,13 +13,15 @@ import com.mercadolibre.projetointegrador.repository.BatchRepository;
 import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +30,7 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     private final ModelMapper modelMapper;
     private final ProductServiceImpl productService;
     private final BatchRepository batchRepository;
+    private final BatchMapper batchMapper;
 
     public List<Batch> create(List<BatchDTO> batchDTOS) {
 
@@ -123,5 +128,24 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     @Override
     public List<Batch> findAll() {
         return null;
+    }
+
+    public List<BatchDueDateResponseDTO> findByDueDateBetween(int days) {
+        LocalDate today = LocalDate.now();
+        LocalDate finalDate = today.plusDays(days);
+        return batchMapper.mapListDtoReponseToEntity(
+                batchRepository.findBatchByDueDateBetween(today, finalDate)
+                        .orElse(new ArrayList<>())
+        );
+    }
+
+    public List<BatchDueDateResponseDTO> findByDueDateCategoryBetweenDates(String category, int days, String order) {
+        LocalDate today = LocalDate.now();
+        LocalDate finalDate =  today.plusDays(days);
+        Pageable pageable = PageRequest.of(0,1000, Sort.Direction.valueOf(order.toUpperCase()), "C.due_Date");
+
+        return batchMapper.mapListDtoReponseToEntity(
+                batchRepository.findDueDateBySectionOrdered(category, today,finalDate, pageable).getContent()
+        );
     }
 }
