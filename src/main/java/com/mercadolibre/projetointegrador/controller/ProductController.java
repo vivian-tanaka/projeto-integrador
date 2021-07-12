@@ -40,7 +40,7 @@ public class ProductController {
     }
 
     @Operation(summary = "US02 - Get all Products", responses = {
-            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product   .class))),
+            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -68,6 +68,9 @@ public class ProductController {
 
     @GetMapping("/section")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "US03 - Check Product Location in Warehouse", responses = {
+            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductSectionResponseDTO.class))),
+    })
     public List<ProductSectionResponseDTO> findSectionsByProductId(
             @RequestParam(value = "product-id") Long id,
             @RequestParam(value = "order-by", required = false, defaultValue = "") String orderBy,
@@ -77,6 +80,9 @@ public class ProductController {
 
     @GetMapping("/warehouse")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "US04 - Check Product Stock in Warehouse", responses = {
+            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WarehouseStockResponseDTO.class))),
+    })
     public WarehouseStockResponseDTO findProductstockInWarehouse(
             @RequestParam(value = "product-id") Long id){
         return productService.findProductstockInWarehouses(id);
