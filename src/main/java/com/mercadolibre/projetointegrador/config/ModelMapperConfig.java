@@ -1,6 +1,7 @@
 package com.mercadolibre.projetointegrador.config;
 
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
+import com.mercadolibre.projetointegrador.dtos.response.BatchDueDateResponseDTO;
 import com.mercadolibre.projetointegrador.model.Batch;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -40,8 +41,17 @@ public class ModelMapperConfig {
             }
         };
 
+        PropertyMap<Batch, BatchDueDateResponseDTO> batchDueDtoMapToEntity = new PropertyMap<Batch, BatchDueDateResponseDTO>() {
+            protected void configure() {
+                map().setBatchNumber(source.getId());
+                map().setProductId(source.getProduct().getId());
+                map().setQuantity(source.getCurrentQuantity());
+            }
+        };
+
         mapper.addMappings(batchMapToDto);
         mapper.addMappings(batchDtoMapToEntity);
+        mapper.addMappings(batchDueDtoMapToEntity);
     }
 
 
