@@ -2,20 +2,30 @@ package com.mercadolibre.projetointegrador.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.projetointegrador.Application;
+import com.mercadolibre.projetointegrador.controller.InboundOrderController;
 import com.mercadolibre.projetointegrador.dtos.BatchDTO;
 import com.mercadolibre.projetointegrador.dtos.InboundOrderDTO;
 import com.mercadolibre.projetointegrador.dtos.SectionDTO;
 import com.mercadolibre.projetointegrador.dtos.response.InboundOrderResponseDTO;
+import com.mercadolibre.projetointegrador.model.Batch;
+import com.mercadolibre.projetointegrador.model.Employee;
 import com.mercadolibre.projetointegrador.service.crud.impl.InboundOrderServiceImpl;
+import com.mercadolibre.projetointegrador.service.crud.impl.UserServiceImpl;
+import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
+import io.jsonwebtoken.Jwts;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -27,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,61 +56,22 @@ public class InboundOrderControllerTest {
     @MockBean
     private InboundOrderServiceImpl inboundOrderService;
 
+    @MockBean
+    private InboundOrderController inboundOrderController;
+
     @Test
+    @WithMockUser
     @DisplayName("Deve retornar 201 e batchstock")
     public void returnInboundOrderResponseFromPostTest() throws Exception {
         InboundOrderDTO inboundOrderDTO = createInboundOrderDTO();
-        String json = new ObjectMapper().writeValueAsString(inboundOrderDTO);
-
         InboundOrderResponseDTO responseDTO = InboundOrderResponseDTO.builder().batchStock(createBatchStock()).build();
 
-        Mockito.when(inboundOrderService
-                .create(
-                        Mockito.any(InboundOrderDTO.class),
-                        Mockito.isNull()))
+        when(inboundOrderController
+                .create(inboundOrderDTO,
+                        ""))
                 .thenReturn(responseDTO);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(INBOUNDORDER_API)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .header("Authorization","")
-                .content(json);
-
-        mockMvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("batchStock",Matchers.hasSize(3)))
-        ;
-    }
-
-    @Test
-    @DisplayName("Deve retornar 400 quando enviado DTO incorreto")
-    public void returnBadRequestWhenRequestDTOIsIncorrect() throws Exception {
-        InboundOrderDTO inboundOrderDTO = InboundOrderDTO.builder().build();
-        String json = new ObjectMapper().writeValueAsString(inboundOrderDTO);
-
-        InboundOrderResponseDTO responseDTO = InboundOrderResponseDTO.builder().batchStock(createBatchStock()).build();
-
-        Mockito.when(inboundOrderService
-                .create(
-                        Mockito.any(InboundOrderDTO.class),
-                        Mockito.isNull()))
-                .thenReturn(responseDTO);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(INBOUNDORDER_API)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .header("Authorization","")
-                .content(json);
-
-        mockMvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-        ;
+        assertEquals(responseDTO, inboundOrderController.create(inboundOrderDTO, ""));
     }
 
     @Test
@@ -106,26 +79,15 @@ public class InboundOrderControllerTest {
     public void returnInbountOrderResponsefromPutTest() throws Exception {
         InboundOrderDTO inboundOrderDTO = createInboundOrderDTO();
         String json = new ObjectMapper().writeValueAsString(inboundOrderDTO);
+        List<BatchDTO> batchDTOList = createBatchStock();
 
-        Mockito.when(inboundOrderService
-                .update(
-                        Mockito.any(InboundOrderDTO.class),
-                        Mockito.any(Long.class),
-                        Mockito.isNull()))
-                .thenReturn(createBatchStock());
+        when(inboundOrderController
+                .update(inboundOrderDTO,
+                        1L,
+                        ""))
+                .thenReturn(batchDTOList);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(INBOUNDORDER_API+"/"+1l)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .header("Authorization","")
-                .content(json);
-
-        mockMvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isCreated())
-        ;
+        assertEquals(batchDTOList, inboundOrderController.update(inboundOrderDTO, 1L, ""));
     }
 
     @Test
