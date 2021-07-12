@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/fresh-products/duedate").hasAnyAuthority("ROLE_SUPERVISOR", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/fresh-products/duedate/list").hasAnyAuthority("ROLE_SUPERVISOR", "ROLE_ADMIN")
 
+
                 .anyRequest().authenticated();
     }
 }

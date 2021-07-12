@@ -25,6 +25,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
 
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
+
     private final InboundOrderRepository inboundRepository;
 
     private final EmployeeServiceImpl employeeService;
