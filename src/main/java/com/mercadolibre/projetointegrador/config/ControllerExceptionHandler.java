@@ -104,6 +104,9 @@ public class ControllerExceptionHandler {
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiError dataIntegrityViolation(DataIntegrityViolationException ex) {
+
+		log.error("Violacao de dados");
+
 		ApiError error = new ApiError(
 				ex.getClass().getName(),
 				"Violacao de dados",

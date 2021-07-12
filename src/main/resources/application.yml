@@ -20,7 +20,6 @@ springdoc:
     path: /v3/api-docs
   paths-to-match: /api/v1/fresh-products/inboundorder/**, /api/v1/fresh-products/orders/**, /api/v1/fresh-products/list, /api/v1/fresh-products
 #  packages-to-scan: com.mercadolibre.projetointegrador.controller
-
   show-actuator: true
   swagger-ui:
     operations-sorter: alpha
@@ -29,6 +28,6 @@ springdoc:
 
 app:
   title: projetointegrador
-
   description: Projeto integrador desenvolvido como desafio final do bootcamp de aceleração
   version: 1.0.0
+

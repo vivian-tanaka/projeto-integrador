@@ -14,6 +14,7 @@ import com.mercadolibre.projetointegrador.service.crud.ICRUD;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ public class ProductServiceImpl implements ICRUD<Product> {
     private final InboundOrderRepository inboundRepository;
 
     private final EmployeeServiceImpl employeeService;
+
     private final ModelMapper modelMapper;
 
     @Override
@@ -110,7 +112,6 @@ public class ProductServiceImpl implements ICRUD<Product> {
     }
 
     private Map<Section, List<Batch>> findBatchStockGroupBySection(Product product, Warehouse warehouse) {
-
         List<InboundOrder> inboundOrders = inboundRepository.findAllBySection_Warehouse_Id(warehouse.getId());
 
         Map<Section, List<Batch>> resultMap = new HashMap<>();
@@ -146,7 +147,6 @@ public class ProductServiceImpl implements ICRUD<Product> {
                 .stream()
                 .filter(batch -> batch.getProduct().getId().equals(product.getId()));
     }
-
 
     private List<ProductSectionResponseDTO> buildProductSectionResponse(Map<Section, List<Batch>> sectionBatches, Long productId, String orderBy) {
         List<ProductSectionResponseDTO> builtResponse = new ArrayList<>();

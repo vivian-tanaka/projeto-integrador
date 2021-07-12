@@ -1,6 +1,7 @@
 package com.mercadolibre.projetointegrador.model;
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Getter
