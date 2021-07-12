@@ -42,7 +42,7 @@ public class ProductController {
     @Operation(summary = "US02 - Get all Products", responses = {
             @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
     })
-    @GetMapping
+    @GetMapping("/products")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAllProducts(){
         return productService.findAll();
@@ -58,12 +58,6 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public Product findByName(@PathVariable String name){
         return productService.findByName(name);
-    }
-
-    @GetMapping("/seller/{name}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Product> findAllBySellerName(@PathVariable String name){
-        return productService.findAllBySellerName(name);
     }
 
     @GetMapping("/section")
