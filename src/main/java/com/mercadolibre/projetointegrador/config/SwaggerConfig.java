@@ -1,7 +1,9 @@
 package com.mercadolibre.projetointegrador.config;
 
 import com.google.common.collect.Lists;
+import com.mercadolibre.projetointegrador.controller.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -16,6 +18,14 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
+@ComponentScan(basePackageClasses = {
+        BatchController.class,
+        ExpiredBatchController.class,
+        InboundOrderController.class,
+        ProductController.class,
+        PurchaseOrderController.class,
+        SessionController.class
+})
 public class SwaggerConfig {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -25,7 +35,7 @@ public class SwaggerConfig {
     public Docket apiDocket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.mercadolibre.projetointegrador"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo())
@@ -44,9 +54,9 @@ public class SwaggerConfig {
     }
 
     private Contact contact(){
-        return new Contact("Grupo 3 Bootcamp",
-                "",
-                "");
+        return new Contact("Vivian Tanaka",
+                "https://github.com/vivian-tanaka/projeto-integrador",
+                "vivian.tanaka@mercadolivre.com");
     }
 
     private SecurityContext securityContext() {

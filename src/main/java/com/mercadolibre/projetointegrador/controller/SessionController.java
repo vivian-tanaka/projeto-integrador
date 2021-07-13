@@ -2,12 +2,15 @@ package com.mercadolibre.projetointegrador.controller;
 
 import com.mercadolibre.projetointegrador.dtos.response.UserResponseDTO;
 import com.mercadolibre.projetointegrador.service.ISessionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import javassist.NotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(tags = "Session", value = "/api/v1/sign-in")
 @RequestMapping(path = "/api/v1")
 @RestController
 public class SessionController {
@@ -27,7 +30,9 @@ public class SessionController {
      * @throws NotFoundException
      */
     @PostMapping("/sign-in")
-    public UserResponseDTO login(@RequestParam("username") String username, @RequestParam("password") String password) throws NotFoundException {
+    public UserResponseDTO login(@ApiParam(value = "Default value for tests", defaultValue = "sandro") @RequestParam("username") String username,
+                                 @ApiParam(value = "Default value for tests", defaultValue = "954ght4h6") @RequestParam("password") String password)
+            throws NotFoundException {
         return service.login(username, password);
     }
 
