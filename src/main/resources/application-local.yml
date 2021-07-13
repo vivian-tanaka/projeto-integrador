@@ -4,12 +4,14 @@
 
 spring:
   datasource:
+#    host: proxysql.master.meliseginf.com:6612
+#    db: tanakadb
+#    username: vtanaka
+#    password: MPLDY19G
     host: localhost:3306
-    #host: proxysql.master.meliseginf.com:6612
-    db: ${SECRET_DATABASE}
-    #db: g3projdb
-    username: ${SECRET_USER}
-    password: ${SECRET_PASS}
+    db: tanakadb
+    username: root
+    password: password
     initialization-mode: always
 
   jpa:
