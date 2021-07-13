@@ -10,8 +10,8 @@ spring:
 #    password: MPLDY19G
     host: localhost:3306
     db: tanakadb
-    username: root
-    password: password
+    username: ${USER_NAME}
+    password: ${USER_PASS}
     initialization-mode: always
 
   jpa:
