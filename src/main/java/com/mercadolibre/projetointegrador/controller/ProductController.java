@@ -5,10 +5,8 @@ import com.mercadolibre.projetointegrador.dtos.response.WarehouseStockResponseDT
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
 import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 
+@Api(tags = "Products", value = "/api/v1/fresh-products")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/fresh-products")
@@ -39,9 +38,9 @@ public class ProductController {
         return "Product of Id " + id + " deleted.";
     }
 
-    @Operation(summary = "US02 - Get all Products", responses = {
-            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
-    })
+
+
+    @ApiOperation("US02 - Get all Products")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAllProducts(){
@@ -66,11 +65,9 @@ public class ProductController {
         return productService.findAllBySellerName(name);
     }
 
+    @ApiOperation("US03 - Check Product Location in Warehouse")
     @GetMapping("/section")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "US03 - Check Product Location in Warehouse", responses = {
-            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductSectionResponseDTO.class))),
-    })
     public List<ProductSectionResponseDTO> findSectionsByProductId(
             @RequestParam(value = "product-id") Long id,
             @RequestParam(value = "order-by", required = false, defaultValue = "") String orderBy,
@@ -78,11 +75,9 @@ public class ProductController {
         return productService.findSectionStockByProductId(id,orderBy, SessionServiceImpl.getUsername(token));
     }
 
+    @ApiOperation("US04 - Check Product Stock in Warehouse")
     @GetMapping("/warehouse")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "US04 - Check Product Stock in Warehouse", responses = {
-            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WarehouseStockResponseDTO.class))),
-    })
     public WarehouseStockResponseDTO findProductstockInWarehouse(
             @RequestParam(value = "product-id") Long id){
         return productService.findProductstockInWarehouses(id);
