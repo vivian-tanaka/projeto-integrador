@@ -7,7 +7,7 @@ Para inicializar o projeto, utilizar as seguintes variáveis de ambiente:
 > USER_PASS=\<seu password\> <br>
 > USER_DB=tanakadb <br>
 
-Criar na conexão local um schema nomeado como tanakadb.
+Criar na conexão local um schema mysql nomeado como tanakadb.
 
 ## Documentação
 
