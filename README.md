@@ -1,6 +1,6 @@
 
 ## Documentação
-* [Postman](https://documenter.getpostman.com/view/15986714/Tzm8Fvdz) ou importar a collection:
+* [Postman](https://documenter.getpostman.com/view/15849561/Tzm9iZv9) ou importar a collection:
 
 https://www.getpostman.com/collections/7d8ea23c8b895c297fab
 
