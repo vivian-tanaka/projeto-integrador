@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     @ApiOperation("US02 - Get all Products")
-    @GetMapping
+    @GetMapping("/products")
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAllProducts(){
         return productService.findAll();
@@ -55,6 +55,7 @@ public class ProductController {
     public Product findByName(@PathVariable String name){
         return productService.findByName(name);
     }
+
 
     @GetMapping("/seller/{name}")
     @ResponseStatus(HttpStatus.OK)
