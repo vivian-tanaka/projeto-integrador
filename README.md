@@ -1,5 +1,34 @@
+
 # Postman
 * [Documentation](https://documenter.getpostman.com/view/15986714/Tzm8Fvdz)
+
+## Inicialização
+
+Para inicializar o projeto, utilizar as seguintes variáveis de ambiente:
+
+> SCOPE=local <br>
+> USER_NAME=\<seu usuario\> <br>
+> USER_PASS=\<seu password\> <br>
+> USER_DB=tanakadb <br>
+
+Criar na conexão local um schema mysql nomeado como tanakadb.
+
+## Documentação
+
+Importar a collection do postman:
+
+https://www.getpostman.com/collections/7d8ea23c8b895c297fab
+
+Variáveis de ambiente utilizadas:
+
+{{authToken}} = Bearer token de autenticação <br>
+{{projetolocal}} = localhost:8082
+
+## US06 - Verificar itens de estoque a vencer da warehouse do representante
+
+| HTTP | Modelo URI                                          | Descrição                                                                                    | US-code                                    |
+|------|-----------------------------------------------------|----------------------------------------------------------------------------------------------|--------------------------------------------|
+| GET  | /api/v1/fresh-products/duedate/sections?days=[days] | Obtenha todos os itens de estoque da warehouse que estão para expirar entre hoje e hoje+days | Ml-check-to-expire-batches-in-warehouse-06 |
 
 ## Day 1 -> Class Diagram
 
