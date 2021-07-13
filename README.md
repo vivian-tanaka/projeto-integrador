@@ -1,3 +1,31 @@
+## Inicialização
+
+Para inicializar o projeto, utilizar as seguintes variáveis de ambiente:
+
+> SCOPE=local <br>
+> USER_NAME=\<seu usuario\> <br>
+> USER_PASS=\<seu password\> <br>
+> USER_DB=tanakadb <br>
+
+Criar na conexão local um schema nomeado como tanakadb.
+
+## Documentação
+
+Importar a collection do postman:
+
+https://www.getpostman.com/collections/7d8ea23c8b895c297fab
+
+Variáveis de ambiente utilizadas:
+
+{{authToken}} = Bearer token de autenticação <br>
+{{projetolocal}} = localhost:8082
+
+## US06 - Verificar itens de estoque a vencer da warehouse do representante
+
+| HTTP | Modelo URI                                          | Descrição                                                                                    | US-code                                    |
+|------|-----------------------------------------------------|----------------------------------------------------------------------------------------------|--------------------------------------------|
+| GET  | /api/v1/fresh-products/duedate/sections?days=[days] | Obtenha todos os itens de estoque da warehouse que estão para expirar entre hoje e hoje+days | Ml-check-to-expire-batches-in-warehouse-06 |
+
 ## Day 1 -> Class Diagram
 
 [![](https://mermaid.ink/img/eyJjb2RlIjoiY2xhc3NEaWFncmFtXG4gICAgVXNlciA8fC0tIFNlbGxlclxuICAgIFNlbGxlciAtLSBQcm9kdWN0XG4gICAgRW1wbG95ZWUgPHwtLSBTdXBlcnZpc29yXG4gICAgT3JkZXIgLS0gU2VjdGlvblxuICAgIE9yZGVyIC0tIEJhdGNoSXRlbVxuICAgIE9yZGVyIC0tIFN1cGVydmlzb3JcbiAgICBTZWN0aW9uIC0tV2FyZWhvdXNlXG4gICAgQmF0Y2hJdGVtIC0tIFByb2R1Y3RcblxuXG4gICAgVXNlciA6IC1Mb25nIGlkXG4gICAgVXNlciA6IC1TdHJpbmcgdXNlcm5hbWVcbiAgICBVc2VyIDogLVN0cmluZyBwYXNzd29yZFxuICAgIFVzZXIgOiAtU3RyaW5nIGVtYWlsXG4gICAgXG4gICAgY2xhc3MgRW1wbG95ZWUge1xuICAgICAgICAtTG9uZyBpZFxuICAgICAgICAtU3RyaW5nIHVzZXJuYW1lXG4gICAgICAgIC1TdHJpbmcgcGFzc3dvcmRcbiAgICAgICAgLVN0cmluZyBlbWFpbFxuICAgICAgICAtV2FyZWhvdXNlIHdhcmVob3VzZVxuICAgIH1cblxuICAgIGNsYXNzIFN1cGVydmlzb3J7XG5cbiAgICB9XG5cbiAgICBjbGFzcyBTZWxsZXJ7XG4gICAgICBwcm9kdWN0cyA6IFByb2R1Y3RcbiAgICB9XG5cbiAgICBjbGFzcyBQcm9kdWN0e1xuXG4gICAgfVxuXG4gICAgY2xhc3MgV2FyZWhvdXNlIHtcbiAgICAgICAgLUxvbmcgaWRcbiAgICAgICAgLUxpc3R-U2VjdGlvbn4gc2VjdGlvbnNcbiAgICAgICAgLUxpc3R-RW1wbG95ZWV-IGVtcGxveWVlc1xuICAgIH1cblxuICAgIGNsYXNzIEJhdGNoSXRlbSB7XG4gICAgICAgIC1pbnQgYmF0Y2hOdW1iZXJcbiAgICAgICAgLVByb2R1Y3QgcHJvZHVjdFxuICAgICAgICAtRmxvYXQgY3VycmVudFRlbXBlcmF0dXJlXG4gICAgICAgIC1GbG9hdCBtaW5UZW1wZXJhdHVyZVxuICAgICAgICAtRmxvYXQgbWF4VGVtcGVyYXR1cmVcbiAgICAgICAgLWludCBpbml0aWFsUXVhbnRpdHlcbiAgICAgICAgLWludCBjdXJyZW50UXVhbnRpdHlcbiAgICAgICAgLUxvY2FsRGF0ZSBtYW51ZmFjdHVyaW5nRGF0ZVxuICAgICAgICAtTG9jYWxEYXRlVGltZSBtYW51ZmFjdHVyaW5nVGltZVxuICAgICAgICAtTG9jYWxEYXRlIGR1ZURhdGVcbiAgICB9XG5cbiAgICBjbGFzcyBPcmRlciB7XG4gICAgICAgIC1pbnQgb3JkZXJOdW1iZXIgXG4gICAgICAgIC1Mb2NhbERhdGUgb3JkZXJEYXRlIFxuICAgICAgICAtU2VjdGlvbiBzZWN0aW9uIFxuICAgICAgICAtTGlzdH5CYXRjaEl0ZW1-IGJhdGNoU3RvY2tcbiAgICAgICAgLVN1cGVydmlzb3Igc3VwZXJ2aXNvclxuICAgIH1cblxuICAgIGNsYXNzIFNlY3Rpb24ge1xuICAgICAgICAtU3RyaW5nIHNlY3Rpb25Db2RlXG4gICAgICAgIC1XYXJlaG91c2Ugd2FyZWhvdXNlXG4gICAgICAgIC1GbG9hdCBtaW5UZW1wZXJhdHVyZVxuICAgICAgICAtRmxvYXQgbWF4VGVtcGVyYXR1cmVcbiAgICB9IiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)](https://mermaid-js.github.io/mermaid-live-editor/edit/##eyJjb2RlIjoiY2xhc3NEaWFncmFtXG4gICAgVXNlciA8fC0tIFNlbGxlclxuICAgIFNlbGxlciAtLSBQcm9kdWN0XG4gICAgRW1wbG95ZWUgPHwtLSBTdXBlcnZpc29yXG4gICAgT3JkZXIgLS0gU2VjdGlvblxuICAgIE9yZGVyIC0tIEJhdGNoSXRlbVxuICAgIE9yZGVyIC0tIFN1cGVydmlzb3JcbiAgICBTZWN0aW9uIC0tV2FyZWhvdXNlXG4gICAgQmF0Y2hJdGVtIC0tIFByb2R1Y1xuXG5cbiAgICBVc2VyIDogLUxvbmcgaWRcbiAgICBVc2VyIDogLVN0cmluZyB1c2VybmFtZVxuICAgIFVzZXIgOiAtU3RyaW5nIHBhc3N3b3JkXG4gICAgVXNlciA6IC1TdHJpbmcgZW1haWxcbiAgICBcbiAgICBjbGFzcyBFbXBsb3llZSB7XG4gICAgICAgIC1Mb25nIGlkXG4gICAgICAgIC1TdHJpbmcgdXNlcm5hbWVcbiAgICAgICAgLVN0cmluZyBwYXNzd29yZFxuICAgICAgICAtU3RyaW5nIGVtYWlsXG4gICAgICAgIC1XYXJlaG91c2Ugd2FyZWhvdXNlXG4gICAgfVxuXG4gICAgY2xhc3MgU3VwZXJ2aXNvcntcblxuICAgIH1cblxuICAgIGNsYXNzIFNlbGxlcntcbiAgICAgIHByb2R1Y3RzIDogUHJvZHVjdFxuICAgIH1cblxuICAgIGNsYXNzIFByb2R1Y3R7XG5cbiAgICB9XG5cbiAgICBjbGFzcyBXYXJlaG91c2Uge1xuICAgICAgICAtTG9uZyBpZFxuICAgICAgICAtTGlzdH5TZWN0aW9ufiBzZWN0aW9uc1xuICAgICAgICAtTGlzdH5FbXBsb3llZX4gZW1wbG95ZWVzXG4gICAgfVxuXG4gICAgY2xhc3MgQmF0Y2hJdGVtIHtcbiAgICAgICAgLWludCBiYXRjaE51bWJlclxuICAgICAgICAtUHJvZHVjdCBwcm9kdWN0XG4gICAgICAgIC1GbG9hdCBjdXJyZW50VGVtcGVyYXR1cmVcbiAgICAgICAgLUZsb2F0IG1pblRlbXBlcmF0dXJlXG4gICAgICAgIC1GbG9hdCBtYXhUZW1wZXJhdHVyZVxuICAgICAgICAtaW50IGluaXRpYWxRdWFudGl0eVxuICAgICAgICAtaW50IGN1cnJlbnRRdWFudGl0eVxuICAgICAgICAtTG9jYWxEYXRlIG1hbnVmYWN0dXJpbmdEYXRlXG4gICAgICAgIC1Mb2NhbERhdGVUaW1lIG1hbnVmYWN0dXJpbmdUaW1lXG4gICAgICAgIC1Mb2NhbERhdGUgZHVlRGF0ZVxuICAgIH1cblxuICAgIGNsYXNzIE9yZGVyIHtcbiAgICAgICAgLWludCBvcmRlck51bWJlciBcbiAgICAgICAgLUxvY2FsRGF0ZSBvcmRlckRhdGUgXG4gICAgICAgIC1TZWN0aW9uIHNlY3Rpb24gXG4gICAgICAgIC1MaXN0fkJhdGNoSXRlbX4gYmF0Y2hTdG9ja1xuICAgICAgICAtU3VwZXJ2aXNvciBzdXBlcnZpc29yXG4gICAgfVxuXG4gICAgY2xhc3MgU2VjdGlvbiB7XG4gICAgICAgIC1TdHJpbmcgc2VjdGlvbkNvZGVcbiAgICAgICAgLVdhcmVob3VzZSB3YXJlaG91c2VcbiAgICAgICAgLUZsb2F0IG1pblRlbXBlcmF0dXJlXG4gICAgICAgIC1GbG9hdCBtYXhUZW1wZXJhdHVyZVxuICAgIH0iLCJtZXJtYWlkIjoie1xuICBcInRoZW1lXCI6IFwiZGVmYXVsdFwiXG59IiwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)
