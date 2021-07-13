@@ -1,8 +1,6 @@
 
-# Documentação
-* [Postman](https://documenter.getpostman.com/view/15986714/Tzm8Fvdz)
-
-ou importar a collection:
+## Documentação
+* [Postman](https://documenter.getpostman.com/view/15986714/Tzm8Fvdz) ou importar a collection:
 
 https://www.getpostman.com/collections/7d8ea23c8b895c297fab
 
@@ -12,6 +10,7 @@ Variáveis de ambiente utilizadas:
 {{projetolocal}} = localhost:8082
 
 * [Swagger](http://localhost:8082/swagger-ui.html#/)
+
 Inicializar a aplicação e acessar a documentação do Swagger.
 
 ## Inicialização
@@ -23,7 +22,7 @@ Para inicializar o projeto, utilizar as seguintes variáveis de ambiente:
 > USER_PASS=\<seu password\> <br>
 > USER_DB=<seu schema\> <br>
 
-Criar na conexão local um schema mysql nomeado como tanakadb.
+Já há um script para criação de massa inicial em resources/data.sql
 
 ## US06 - Verificar itens de estoque a vencer da warehouse do representante
 
