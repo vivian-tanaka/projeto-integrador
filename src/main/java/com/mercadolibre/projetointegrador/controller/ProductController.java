@@ -5,7 +5,6 @@ import com.mercadolibre.projetointegrador.dtos.response.WarehouseStockResponseDT
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
 import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
