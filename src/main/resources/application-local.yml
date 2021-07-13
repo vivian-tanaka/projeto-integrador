@@ -9,7 +9,7 @@ spring:
 #    username: vtanaka
 #    password: MPLDY19G
     host: localhost:3306
-    db: tanakadb
+    db: ${SECRET_DATABASE}
     username: ${USER_NAME}
     password: ${USER_PASS}
     initialization-mode: always

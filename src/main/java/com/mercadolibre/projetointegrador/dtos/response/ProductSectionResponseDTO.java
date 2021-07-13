@@ -2,7 +2,10 @@ package com.mercadolibre.projetointegrador.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mercadolibre.projetointegrador.dtos.SectionDTO;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
