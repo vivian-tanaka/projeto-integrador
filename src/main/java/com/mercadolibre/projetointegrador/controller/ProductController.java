@@ -5,6 +5,7 @@ import com.mercadolibre.projetointegrador.dtos.response.WarehouseStockResponseDT
 import com.mercadolibre.projetointegrador.model.Product;
 import com.mercadolibre.projetointegrador.service.crud.impl.ProductServiceImpl;
 import com.mercadolibre.projetointegrador.service.impl.SessionServiceImpl;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-
 
 @Api(tags = "Products", value = "/api/v1/fresh-products")
 @RequiredArgsConstructor
@@ -37,8 +37,6 @@ public class ProductController {
         productService.delete(id);
         return "Product of Id " + id + " deleted.";
     }
-
-
 
     @ApiOperation("US02 - Get all Products")
     @GetMapping
