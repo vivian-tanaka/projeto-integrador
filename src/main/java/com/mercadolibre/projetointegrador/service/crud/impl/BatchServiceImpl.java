@@ -161,30 +161,22 @@ public class BatchServiceImpl implements ICRUD<Batch> {
         LocalDate today = LocalDate.now();
         LocalDate finalDate = today.plusDays(days);
 
-        List<InboundOrder> inboundOrders = inboundOrderRepository.findAllBySection_Warehouse_Id(warehouse.getId());
+        List<InboundOrder> inboundOrders = getInboundOrderWithExpiredBatches(
+                today,
+                finalDate,
+                inboundOrderRepository.findAllBySection_Warehouse_Id(warehouse.getId()));
 
-        for (InboundOrder order : inboundOrders) {
-            order.setBatchStock(order
-                    .getBatchStock()
-                    .stream()
-                    .filter(batch -> batch.getDueDate().isAfter(today) && batch.getDueDate().isBefore(finalDate))
-                    .collect(Collectors.toList()));
-        }
+        if(inboundOrders.isEmpty()) throw new NotFoundException("No expired batches found in this warehouse");
 
-        inboundOrders = inboundOrders.stream().filter(inbound -> !inbound.getBatchStock().isEmpty()).collect(Collectors.toList());
+        Map<Section, List<Batch>> resultMap = getBatchesGroupedBySection(inboundOrders);
 
-        Map<Section, List<Batch>> resultMap = new HashMap<>();
+        List<ProductSectionResponseDTO> builtResponse = getProductSectionResponseDTOS(resultMap);
 
-        for (InboundOrder inbound : inboundOrders) {
-            List<Batch> batchStock = inbound.getBatchStock();
+        return builtResponse;
 
-            if (!batchStock.isEmpty() && resultMap.containsKey(inbound.getSection())) {
-                resultMap.get(inbound.getSection()).addAll(batchStock);
-            } else if (!batchStock.isEmpty()) {
-                resultMap.put(inbound.getSection(), batchStock);
-            }
-        }
+    }
 
+    private List<ProductSectionResponseDTO> getProductSectionResponseDTOS(Map<Section, List<Batch>> resultMap) {
         List<ProductSectionResponseDTO> builtResponse = new ArrayList<>();
 
         for (Map.Entry<Section, List<Batch>> entry : resultMap.entrySet()) {
@@ -210,8 +202,34 @@ public class BatchServiceImpl implements ICRUD<Batch> {
 
             builtResponse.add(responseDTO);
         }
-
         return builtResponse;
+    }
 
+    private Map<Section, List<Batch>> getBatchesGroupedBySection(List<InboundOrder> inboundOrders) {
+        Map<Section, List<Batch>> resultMap = new HashMap<>();
+
+        for (InboundOrder inbound : inboundOrders) {
+            List<Batch> batchStock = inbound.getBatchStock();
+
+            if (!batchStock.isEmpty() && resultMap.containsKey(inbound.getSection())) {
+                resultMap.get(inbound.getSection()).addAll(batchStock);
+            } else if (!batchStock.isEmpty()) {
+                resultMap.put(inbound.getSection(), batchStock);
+            }
+        }
+        return resultMap;
+    }
+
+    private List<InboundOrder> getInboundOrderWithExpiredBatches(LocalDate today, LocalDate finalDate, List<InboundOrder> inboundOrders) {
+        for (InboundOrder order : inboundOrders) {
+            order.setBatchStock(order
+                    .getBatchStock()
+                    .stream()
+                    .filter(batch -> batch.getDueDate().isAfter(today) && batch.getDueDate().isBefore(finalDate))
+                    .collect(Collectors.toList()));
+        }
+
+        inboundOrders = inboundOrders.stream().filter(inbound -> !inbound.getBatchStock().isEmpty()).collect(Collectors.toList());
+        return inboundOrders;
     }
 }
