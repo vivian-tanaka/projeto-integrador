@@ -30,6 +30,7 @@ public class BatchServiceImpl implements ICRUD<Batch> {
     private final ModelMapper modelMapper;
     private final ProductServiceImpl productService;
     private final BatchRepository batchRepository;
+
     private final BatchMapper batchMapper;
 
     public List<Batch> create(List<BatchDTO> batchDTOS) {
