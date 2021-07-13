@@ -10,5 +10,6 @@ import java.util.List;
 
 @Repository
 public interface InboundOrderRepository extends JpaRepository<InboundOrder, Long> {
+
     List<InboundOrder> findAllBySection_Warehouse_Id(Long warehouseId);
 }
