@@ -224,7 +224,7 @@ public class BatchServiceImpl implements ICRUD<Batch> {
             order.setBatchStock(order
                     .getBatchStock()
                     .stream()
-                    .filter(batch -> batch.getDueDate().isAfter(today) && batch.getDueDate().isBefore(finalDate))
+                    .filter(batch -> batch.getDueDate().isAfter(today.minusDays(1)) && batch.getDueDate().isBefore(finalDate.plusDays(1)))
                     .collect(Collectors.toList()));
         }
 

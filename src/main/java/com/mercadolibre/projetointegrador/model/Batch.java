@@ -30,5 +30,4 @@ public class Batch {
     private LocalDate manufacturingDate;
     private LocalDateTime manufacturingTime;
     private LocalDate dueDate;
-    private boolean isBatchExpired;
 }

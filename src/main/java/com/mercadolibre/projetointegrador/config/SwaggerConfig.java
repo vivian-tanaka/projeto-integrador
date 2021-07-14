@@ -20,7 +20,6 @@ import java.util.List;
 @EnableSwagger2
 @ComponentScan(basePackageClasses = {
         BatchController.class,
-        ExpiredBatchController.class,
         InboundOrderController.class,
         ProductController.class,
         PurchaseOrderController.class,
